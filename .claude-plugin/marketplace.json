@@ -9,10 +9,7 @@
   "plugins": [
     {
       "name": "al-dev-toolkit",
-      "source": {
-        "source": "github",
-        "repo": "AndreiPopaArggo/al-dev-toolkit"
-      },
+      "source": ".",
       "description": "BC AL development toolkit with planning, implementation, code review, and build workflows for Business Central extensions",
       "version": "1.0.0",
       "author": {
