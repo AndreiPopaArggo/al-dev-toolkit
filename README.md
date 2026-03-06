@@ -2,10 +2,19 @@
 
 Claude Code plugin for Business Central AL extension development. Provides planning, implementation, code review, and build workflows through specialized agents and skills.
 
+## Prerequisites
+
+- [Claude Code](https://claude.ai/claude-code) (includes Node.js)
+- [.NET SDK 8.0+](https://dotnet.microsoft.com/download/dotnet/8.0) (for AL symbol parsing)
+- [AL Language extension](https://marketplace.visualstudio.com/items?itemName=ms-dynamics-smb.al) for VS Code (for the AL compiler)
+
 ## Installation
 
+Add the marketplace and install the plugin:
+
 ```bash
-claude plugins install https://github.com/AndreiPopaArggo/al-dev-toolkit
+/plugin marketplace add AndreiPopaArggo/al-dev-toolkit
+/plugin install al-dev-toolkit@al-dev-toolkit
 ```
 
 Then run the setup wizard:
@@ -14,7 +23,7 @@ Then run the setup wizard:
 /setup
 ```
 
-The wizard will configure directories, notifications, status line, global CLAUDE.md, and install the AL MCP server (requires .NET SDK 8.0+).
+The wizard will configure directories, notifications, status line, global CLAUDE.md, and install the AL MCP server.
 
 ## What You Get
 
@@ -71,12 +80,6 @@ Skills are loaded automatically by agents or invoked by commands. You don't call
 | code-reviewer | sonnet | Reviews code quality, security, CodeCop |
 | performance-reviewer | sonnet | Reviews SetLoadFields, N+1, FlowField misuse |
 | spec-reviewer | sonnet | Verifies implementation matches requirements |
-
-## Prerequisites
-
-- [Claude Code](https://claude.ai/claude-code) (includes Node.js)
-- [.NET SDK 8.0+](https://dotnet.microsoft.com/download/dotnet/8.0) (for AL symbol parsing)
-- [AL Language extension](https://marketplace.visualstudio.com/items?itemName=ms-dynamics-smb.al) for VS Code (for the AL compiler)
 
 ## How It Works
 

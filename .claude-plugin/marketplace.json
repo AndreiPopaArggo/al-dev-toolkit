@@ -1,0 +1,25 @@
+{
+  "name": "al-dev-toolkit",
+  "owner": {
+    "name": "Andrei Popa"
+  },
+  "metadata": {
+    "description": "BC AL development toolkit with planning, implementation, code review, and build workflows"
+  },
+  "plugins": [
+    {
+      "name": "al-dev-toolkit",
+      "source": {
+        "source": "github",
+        "repo": "AndreiPopaArggo/al-dev-toolkit"
+      },
+      "description": "BC AL development toolkit with planning, implementation, code review, and build workflows for Business Central extensions",
+      "version": "1.0.0",
+      "author": {
+        "name": "Andrei Popa"
+      },
+      "keywords": ["business-central", "al", "dynamics-365", "erp"],
+      "category": "development"
+    }
+  ]
+}
