@@ -14,7 +14,7 @@ Add the marketplace and install the plugin:
 
 ```bash
 /plugin marketplace add AndreiPopaArggo/al-dev-toolkit
-/plugin install al-dev-toolkit@al-dev-toolkit
+/plugin install al-dev-toolkit@bc-al-toolkit
 ```
 
 Then run the setup wizard:
