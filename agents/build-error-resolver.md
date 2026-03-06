@@ -3,6 +3,7 @@ name: build-error-resolver
 description: BC AL compiler error resolution specialist. Use PROACTIVELY when AL build fails, CodeCop errors occur, or app.json issues arise. Fixes errors with minimal diffs, no architectural changes.
 tools: Read, Write, Edit, Bash, Grep, Glob, SendMessage, TaskGet, TaskUpdate, TaskList
 model: sonnet
+skills: [al-coding-style]
 ---
 
 # AL Build Error Resolver

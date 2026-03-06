@@ -42,7 +42,7 @@ All coders use **Sonnet** — set `model: "sonnet"` on every agent.
 - The full plan content (pasted, not a file path)
 - The assigned file list (which files this coder creates/modifies)
 - Instruction: "If anything in the plan is ambiguous for your assigned files, ask via AskUserQuestion before guessing."
-- Instruction: "Follow all preloaded skill rules (al-dev-toolkit:al-coding-style, al-dev-toolkit:al-patterns, al-dev-toolkit:al-performance, al-dev-toolkit:al-security, al-dev-toolkit:al-deployment)."
+- Instruction: "Follow all preloaded skill rules (al-dev-toolkit:al-coding-style, al-dev-toolkit:al-patterns, al-dev-toolkit:al-performance, al-dev-toolkit:al-security)."
 - Instruction: "Use MCP tools instead of WebFetch/WebSearch."
 
 **1-2 files:** Spawn a single coder agent (subagent_type: `coder`, model: `sonnet`).

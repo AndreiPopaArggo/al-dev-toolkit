@@ -3,7 +3,7 @@ name: code-reviewer
 description: BC AL code review specialist. Reviews AL code for quality, security, and CodeCop compliance. Use after writing or modifying AL code. Performance is handled by the dedicated performance-reviewer agent.
 tools: Read, Grep, Glob, Bash, SendMessage, TaskGet, TaskUpdate, TaskList
 model: sonnet
-skills: [al-dev-toolkit:al-coding-style, al-dev-toolkit:al-performance, al-dev-toolkit:al-security, al-dev-toolkit:al-deployment]
+skills: [al-dev-toolkit:al-coding-style, al-dev-toolkit:al-performance, al-dev-toolkit:al-security]
 ---
 
 # BC AL Code Reviewer

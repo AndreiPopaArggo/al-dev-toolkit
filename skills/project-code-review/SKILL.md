@@ -12,7 +12,7 @@ Review all AL files in the project using agent teams. This is a **read-only** re
 ## Process
 
 1. **Discover** — Glob all `.al` files in the target scope (default: `src/`). If `$ARGUMENTS` specifies a folder or scope, use that instead.
-2. **Read project rules** — The code-reviewer and performance-reviewer agents have their skills preloaded via agent frontmatter (al-coding-style, al-performance, al-security, al-patterns, al-deployment).
+2. **Read project rules** — The code-reviewer and performance-reviewer agents have their skills preloaded via agent frontmatter (al-coding-style, al-performance, al-security, al-patterns).
 3. **Group files** — Split files by feature folder (first subfolder under `src/`). If no subfolders, split into groups of ~10 files.
 4. **Parallel subagent review** — For each file group, spawn **TWO parallel subagents** via the Task tool (all **Sonnet 4.6** — set `model: "sonnet"` on every subagent):
 
