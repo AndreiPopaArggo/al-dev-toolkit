@@ -10,16 +10,22 @@ Claude Code plugin for Business Central AL extension development. Provides plann
 
 ## Installation
 
-Add the marketplace and install the plugin:
+1. Add the marketplace:
 
-```bash
+```
 /plugin marketplace add AndreiPopaArggo/al-dev-toolkit
+```
+
+2. Install the plugin:
+
+```
 /plugin install al-dev-toolkit@bc-al-toolkit
 ```
 
-Then run the setup wizard:
+3. Reload plugins, then run the setup wizard:
 
 ```
+/reload-plugins
 /setup
 ```
 
