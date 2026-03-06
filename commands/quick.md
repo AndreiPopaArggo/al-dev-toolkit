@@ -1,0 +1,107 @@
+---
+description: "Quick implementation for simple 1-2 file changes. Skips planning, includes full review."
+argument-hint: "<description of change>"
+---
+
+# Quick Implementation
+
+For small, well-understood changes that don't need the full /plan → /implement ceremony.
+
+## Step 0 — Classify: Trivial or Substantive?
+
+Before anything else, evaluate the request:
+
+| Trivial (direct edit) | Substantive (agent pipeline) |
+|-----------------------|------------------------------|
+| Rename a caption or tooltip | Add a new field + event subscriber |
+| Change a field property (MinValue, BlankZero, Editable) | New codeunit or page |
+| Fix a typo in a Label | Write or refactor business logic |
+| Add/remove a column on a page (field already exists) | Changes touching 2+ objects with new logic |
+| Change an enum value caption | Anything requiring new procedures |
+| Adjust a SetRange/SetFilter constant | Changes you aren't 100% certain about |
+
+**Rule of thumb:** If the change is a single-property or single-line edit to an existing file and you can see exactly what to write, it's trivial. If there's any logic to compose or any doubt, it's substantive.
+
+---
+
+## Trivial Path (direct edit)
+
+1. **Read project context:** project `CLAUDE.md`, `app.json`, `CodeCop.json` (if exists)
+2. **Read the target file**
+3. **Read the al-coding-style skill** for naming/style rules
+4. **Make the edit directly** using the Edit tool
+5. **Build** using the build command from CLAUDE.md
+   - If errors: fix directly (1 attempt). If still failing, escalate to substantive path.
+6. **Report:** file modified, build status, what changed
+
+No coder agent, no reviewers. Done.
+
+---
+
+## Substantive Path (agent pipeline)
+
+<HARD-GATE>
+- Do NOT write or edit AL code directly. Spawn a coder agent.
+- Do NOT fix build errors directly. Spawn a build-error-resolver agent.
+- Do NOT fix review findings directly. Spawn a coder agent for fixes.
+- Exception: reading project config files (CLAUDE.md, app.json, CodeCop.json) and existing .al files for context is allowed.
+</HARD-GATE>
+
+1. **Read project context:**
+   - Read project `CLAUDE.md` — BC version, deployment target, project rules
+   - Read `app.json` — object ID ranges, dependencies
+   - Read `CodeCop.json` (if exists) — mandatoryAffixes
+
+2. **If the change involves existing files:**
+   - Read those files to understand current state
+
+3. **Implement:**
+   - Spawn a single coder agent (subagent_type: `coder`, model: `sonnet`)
+   - **PASTE the user's original request and project context into the coder's prompt** — do not make the coder guess from conversation context
+   - Include instruction: "If anything is ambiguous, ask via AskUserQuestion before guessing."
+   - The coder agent has al-coding-style and other skills preloaded via its agent frontmatter.
+   - Coder implements the change directly
+
+4. **Build:**
+   - Run `alc.exe` to compile
+   - If errors: spawn build-error-resolver (subagent_type: `build-error-resolver`, model: `sonnet`)
+   - Max 3 build-fix cycles
+
+5. **Spec Review:**
+   After successful build, spawn the **spec-reviewer** agent (subagent_type: `spec-reviewer`, model: `sonnet`).
+   - **PASTE the user's original request** into the prompt as the spec
+   - The agent verifies the implementation matches the request (nothing missing, nothing extra)
+   - **If GAPS:** Spawn a coder agent to fix. Rebuild. Then proceed to step 6.
+   - **If PASS:** Proceed to step 6.
+
+6. **Quality + Performance Review (Parallel):**
+   Spawn TWO parallel agents (both model: `sonnet`):
+   - `code-reviewer` — quality, naming, Labels, DataClassification, CodeCop
+   - `performance-reviewer` — SetLoadFields, N+1, FlowField misuse, bulk ops
+
+   Verdict resolution: any BLOCK → BLOCK, any FIX FIRST → FIX FIRST. APPROVE only when both approve.
+
+7. **Apply review fixes** (if any), rebuild, do NOT re-run reviewers.
+
+8. **Report:**
+   - Files created/modified
+   - Build status
+   - Review findings applied
+
+## When to Use
+
+- Adding a field to a table extension
+- Fixing a bug in a single codeunit
+- Small adjustments to page layout
+- Renaming or refactoring within 1-2 files
+
+## When NOT to Use
+
+- New features requiring 3+ files → use `/plan`
+- Changes requiring base app research → use `/plan`
+- Unclear requirements → use `/plan`
+- Anything touching posting, financial, or security code → use `/plan`
+
+## Arguments
+
+$ARGUMENTS
