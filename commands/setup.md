@@ -61,12 +61,18 @@ process.stdin.on('end', () => {
 
 Print `[created] Status line script.`
 
-Then configure it by running:
-```bash
-claude config set statusLine.command "node $HOME/.claude/scripts/statusline.js"
+Then add the statusLine config to `~/.claude/settings.json`. Read the file, parse the JSON, add/update the `statusLine` key:
+
+```json
+"statusLine": {
+  "type": "command",
+  "command": "node \"$HOME/.claude/scripts/statusline.js\""
+}
 ```
 
-Print the result. If it fails, tell the user to run the command manually.
+Write the updated JSON back. Print `[configured] Status line added to settings.json.`
+
+If `settings.json` doesn't exist yet, create it with just the `statusLine` key wrapped in `{}`.
 
 ## Step 4: Global CLAUDE.md
 
@@ -242,7 +248,7 @@ Then **stop here** — do not proceed to Step 6. The user needs to install .NET 
 
 Run:
 ```bash
-claude mcp add al-mcp-server -s user -- npx -y github:AndreiPopaArggo/AL-Dependency-MCP-Server
+claude mcp add al-mcp-server -s user -- npx -y al-mcp-server
 ```
 
 Verify with `claude mcp get al-mcp-server` and print the result.
