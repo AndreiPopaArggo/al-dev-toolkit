@@ -1,6 +1,8 @@
 ---
 name: al-planning
-description: "Use when planning BC features, multi-object implementations, or unclear requirements. Gathers context, researches base app, designs solution, outputs plan file."
+description: "Plan before implementing. Use for BC features, multi-object implementations, or unclear requirements."
+argument-hint: "<description of what to build>"
+disable-model-invocation: true
 ---
 
 # AL Planning
@@ -145,3 +147,7 @@ Present the plan summary (design decisions, file list, open questions), then ask
 If 1: Spawn an implementation orchestrator (subagent_type: `general-purpose`, model: `opus`) that reads the al-dev-toolkit:al-implementation skill and the plan file. This subagent gets a fresh context window — no research baggage. It handles the full cycle: coders, build, review. Report its results when done.
 If 2: Invoke the al-dev-toolkit:al-implementation skill and execute it directly in this session with the plan already in context.
 If 3: Stop.
+
+## User's Request
+
+$ARGUMENTS

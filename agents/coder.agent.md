@@ -1,8 +1,7 @@
 ---
 name: coder
 description: BC AL implementation specialist. Writes AL code from a plan or applies targeted changes to existing code. Reads project rules at startup for consistent style.
-tools: Read, Write, Edit, Grep, Glob, SendMessage, TaskGet, TaskUpdate, TaskList
-model: sonnet
+tools: Read, Write, Edit, Grep, Glob
 skills: [al-dev-toolkit:al-coding-style, al-dev-toolkit:al-patterns, al-dev-toolkit:al-performance, al-dev-toolkit:al-security]
 ---
 

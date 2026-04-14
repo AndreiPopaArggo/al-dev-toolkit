@@ -1,6 +1,8 @@
 ---
 name: al-implementation
-description: "Use when implementing from a plan file, loaded task session, or conversation context."
+description: "Implement from a plan or conversation context. Covers code, build, and review."
+argument-hint: "[optional: additional instructions or plan path]"
+disable-model-invocation: true
 ---
 
 # AL Implementation Skill
@@ -105,3 +107,7 @@ Present a summary:
 - Items from the plan that were skipped or need attention
 
 **STOP.** Ask if the user wants anything else.
+
+## Additional Instructions
+
+$ARGUMENTS

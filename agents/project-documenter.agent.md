@@ -1,8 +1,7 @@
 ---
 name: project-documenter
 description: BC AL project documentation specialist. Analyzes AL codebases and produces structured documentation reports. Used by /generate-project-docs skill for deep parallel analysis of data models, business logic, UI, integrations, and base app context.
-tools: Read, Write, Edit, Bash, Grep, Glob, SendMessage, TaskGet, TaskUpdate, TaskList
-model: opus
+tools: Read, Write, Edit, Bash, Grep, Glob
 skills: [al-dev-toolkit:al-coding-style, al-dev-toolkit:al-patterns, al-dev-toolkit:al-performance, al-dev-toolkit:al-security]
 ---
 

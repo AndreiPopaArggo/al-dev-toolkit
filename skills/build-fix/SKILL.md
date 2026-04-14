@@ -1,6 +1,8 @@
 ---
 name: build-fix
-description: "Fix AL build errors one at a time. Use when alc.exe compilation fails. Incrementally builds, parses errors, fixes, and re-verifies."
+description: "Fix AL build errors one at a time. Use when alc.exe compilation fails."
+argument-hint: "[optional: scope or instructions]"
+disable-model-invocation: true
 ---
 
 # Build Fix Skill
@@ -71,3 +73,7 @@ Fix in this order: AL0xxx (compiler) -> dependency errors -> AA0xxx (CodeCop) ->
 - **Minimal diffs only** — fix the error, nothing else
 - **Never refactor** surrounding code
 - **Never change business logic** to fix a type error
+
+## User Instructions
+
+$ARGUMENTS

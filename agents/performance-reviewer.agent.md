@@ -1,8 +1,7 @@
 ---
 name: performance-reviewer
 description: BC AL performance review specialist. Reviews AL code exclusively for performance issues — SetLoadFields, N+1 queries, FlowField misuse, missing bulk operations, caching opportunities. Use after writing or modifying AL code, in parallel with code-reviewer.
-tools: Read, Grep, Glob, Bash, SendMessage, TaskGet, TaskUpdate, TaskList
-model: sonnet
+tools: Read, Grep, Glob, Bash
 skills: [al-dev-toolkit:al-performance]
 ---
 

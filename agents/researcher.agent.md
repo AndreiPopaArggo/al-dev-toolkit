@@ -1,10 +1,7 @@
 ---
 name: researcher
 description: BC base application research specialist. Investigates base app objects, events, table structures, and procedures. Read-only — never modifies project files.
-tools: Read, Grep, Glob, Bash, SendMessage, TaskGet, TaskUpdate, TaskList
-disallowedTools: Edit, Write
-mcpServers: al-mcp-server
-model: opus
+tools: Read, Grep, Glob, Bash
 skills: [al-dev-toolkit:bc-research]
 ---
 

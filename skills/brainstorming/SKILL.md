@@ -1,6 +1,8 @@
 ---
 name: brainstorming
-description: "Use when an idea is too vague to plan directly. Refines ideas into specific, plannable BC requirements through collaborative dialogue."
+description: "Refine a vague idea into a specific, plannable BC requirement."
+argument-hint: "<your vague idea>"
+disable-model-invocation: true
 ---
 
 # Brainstorming
@@ -82,3 +84,7 @@ Do NOT invoke /plan automatically — let the user decide when to proceed.
 - **Stay in BC domain** — ground suggestions in BC patterns and limitations
 - **YAGNI** — push back on scope creep during brainstorming
 - **Short conversation** — aim for 3-5 exchanges, not 20
+
+## User's Idea
+
+$ARGUMENTS

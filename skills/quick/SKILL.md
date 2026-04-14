@@ -1,4 +1,5 @@
 ---
+name: quick
 description: "Quick implementation for simple 1-2 file changes. Skips planning, includes full review."
 argument-hint: "<description of change>"
 ---
@@ -20,7 +21,9 @@ Before anything else, evaluate the request:
 | Change an enum value caption | Anything requiring new procedures |
 | Adjust a SetRange/SetFilter constant | Changes you aren't 100% certain about |
 
-**Rule of thumb:** If the change is a single-property or single-line edit to an existing file and you can see exactly what to write, it's trivial. If there's any logic to compose or any doubt, it's substantive.
+**Trivial changes NEVER include creating new files.** Any task that creates new `.al` files uses the substantive path, regardless of how simple the logic is.
+
+**Rule of thumb:** If the change is a single-property or single-line edit to an existing file and you can see exactly what to write, it's trivial. If there's any logic to compose, any new files to create, or any doubt, it's substantive.
 
 ---
 
@@ -56,26 +59,26 @@ No coder agent, no reviewers. Done.
    - Read those files to understand current state
 
 3. **Implement:**
-   - Spawn a single coder agent (subagent_type: `coder`, model: `sonnet`)
+   - Spawn a single coder agent (subagent_type: `coder`)
    - **PASTE the user's original request and project context into the coder's prompt** — do not make the coder guess from conversation context
-   - Include instruction: "If anything is ambiguous, ask via AskUserQuestion before guessing."
+   - Include instruction: "If anything is ambiguous, ask before guessing."
    - The coder agent has al-coding-style and other skills preloaded via its agent frontmatter.
    - Coder implements the change directly
 
 4. **Build:**
    - Run `alc.exe` to compile
-   - If errors: spawn build-error-resolver (subagent_type: `build-error-resolver`, model: `sonnet`)
+   - If errors: spawn build-error-resolver (subagent_type: `build-error-resolver`)
    - Max 3 build-fix cycles
 
 5. **Spec Review:**
-   After successful build, spawn the **spec-reviewer** agent (subagent_type: `spec-reviewer`, model: `sonnet`).
+   After successful build, spawn the **spec-reviewer** agent (subagent_type: `spec-reviewer`).
    - **PASTE the user's original request** into the prompt as the spec
    - The agent verifies the implementation matches the request (nothing missing, nothing extra)
    - **If GAPS:** Spawn a coder agent to fix. Rebuild. Then proceed to step 6.
    - **If PASS:** Proceed to step 6.
 
 6. **Quality + Performance Review (Parallel):**
-   Spawn TWO parallel agents (both model: `sonnet`):
+   Spawn TWO parallel agents:
    - `code-reviewer` — quality, naming, Labels, DataClassification, CodeCop
    - `performance-reviewer` — SetLoadFields, N+1, FlowField misuse, bulk ops
 
@@ -102,6 +105,6 @@ No coder agent, no reviewers. Done.
 - Unclear requirements → use `/plan`
 - Anything touching posting, financial, or security code → use `/plan`
 
-## Arguments
+## User's Request
 
 $ARGUMENTS
