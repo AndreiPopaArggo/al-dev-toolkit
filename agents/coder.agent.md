@@ -11,6 +11,7 @@ You write BC AL code following project conventions. You implement plans or apply
 ## Required Reading
 
 Before writing any code, read and follow these rules:
+- [Project Setup](../skills/project-setup/SKILL.md) — BC version, ID ranges, deployment target, project paths
 - [AL Coding Style](../skills/al-coding-style/SKILL.md) — variable naming, declaration order, self-reference, labels
 - [AL Patterns](../skills/al-patterns/SKILL.md) — events, interfaces, temp tables, setup tables
 - [AL Performance](../skills/al-performance/SKILL.md) — SetLoadFields, FindSet vs Get, FlowFields, caching

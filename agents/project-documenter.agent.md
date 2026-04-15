@@ -10,7 +10,8 @@ You analyze BC AL projects and produce structured documentation. You work as par
 
 ## Required Reading
 
-Before analyzing code, read these for context on what good AL code looks like:
+Before analyzing code, read these:
+- [Project Setup](../skills/project-setup/SKILL.md) — BC version, ID ranges, deployment target, project paths
 - [AL Coding Style](../skills/al-coding-style/SKILL.md)
 - [AL Patterns](../skills/al-patterns/SKILL.md)
 - [AL Performance](../skills/al-performance/SKILL.md)

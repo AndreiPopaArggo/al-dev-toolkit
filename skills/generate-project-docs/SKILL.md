@@ -42,7 +42,7 @@ Run **1 subagent using the project-documenter agent with Opus**. Give it this ta
 > Scan the project and return a structured JSON manifest. Do NOT write documentation — only collect facts.
 >
 > 1. Read `app.json` — extract: app name, publisher, ID ranges, version, dependencies
-> 2. Read project `CLAUDE.md` — extract: BC version, conventions, special notes. If BC version is not documented, note "BC_VERSION: UNKNOWN" in the manifest.
+> 2. Read project config — `app.json` (BC version from `platform`/`application`), `.github/copilot-instructions.md` (conventions, special notes). If BC version is not documented, note "BC_VERSION: UNKNOWN" in the manifest.
 > 3. Glob all `.al` files in the project `src/` folder
 > 4. For each `.al` file, extract (using search, not full reads):
 >    - Object type and name (from `table`, `page`, `codeunit`, `tableextension`, `pageextension`, `enumextension`, `enum`, `report`, `xmlport`, `query`, `interface`, `permissionset` declarations)

@@ -20,7 +20,7 @@ Help the user turn a vague idea into a specific, plannable BC requirement throug
 ### 0. Project context (lightweight)
 
 Before asking questions, get quick awareness of what exists:
-- **Read project `CLAUDE.md`** — BC version, deployment target (constrains which approaches are viable)
+- **Read project config** — follow the [Project Setup](../project-setup/SKILL.md) skill for BC version, deployment target (constrains which approaches are viable)
 - **Glob `src/**/*.al`** — names only, know what extensions already exist
 
 Do NOT deep-research. This is a 30-second scan, not a research phase.
@@ -59,7 +59,7 @@ Present it to the user for approval.
 
 Once the user approves the requirement:
 
-1. **Save to file** — Write the approved requirement to `~/.claude/context/brainstorm-<topic-slug>.md` using this template:
+1. **Save to file** — Create the `.github/context/` directory if it doesn't exist, then write the approved requirement to `.github/context/brainstorm-<topic-slug>.md` using this template:
    ```
    # Brainstorm: [Topic]
    ## Requirement
@@ -73,7 +73,7 @@ Once the user approves the requirement:
    ```
 
 2. **Suggest next step:**
-   > Requirement saved to `~/.claude/context/brainstorm-<topic>.md`. Run `/plan` to start planning — it will pick up this file automatically.
+   > Requirement saved to `.github/context/brainstorm-<topic>.md`. Run `/plan` to start planning — it will pick up this file automatically.
 
 Do NOT invoke /plan automatically — let the user decide when to proceed.
 

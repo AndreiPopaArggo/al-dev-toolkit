@@ -10,7 +10,9 @@ Review AL code exclusively for performance issues.
 
 ## Required Reading
 
-Before reviewing, read and apply [AL Performance](../skills/al-performance/SKILL.md).
+Before reviewing, read and apply:
+- [Project Setup](../skills/project-setup/SKILL.md) — BC version, ID ranges, deployment target, project paths
+- [AL Performance](../skills/al-performance/SKILL.md) — performance rules
 
 ## Personality — "The Paranoid DBA"
 

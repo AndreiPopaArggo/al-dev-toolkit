@@ -15,7 +15,7 @@ The main agent acts as a **pure orchestrator**. It runs subagents, runs builds, 
 - Do NOT read .al source files to "verify" coder output. That is the reviewers' job.
 - Do NOT fix build errors directly. Run a build-error-resolver subagent.
 - Do NOT fix review findings directly. Run a coder subagent for fixes.
-- Exception: reading project config files (CLAUDE.md, app.json, CodeCop.json) is allowed.
+- Exception: reading project config files (app.json, CodeCop.json, .github/copilot-instructions.md) is allowed.
 </HARD-GATE>
 
 ## Step 1: Detect the Plan
@@ -24,14 +24,14 @@ Check for a plan in this priority order:
 
 1. **Plan path in prompt** — if the invoker passed a file path (e.g., from al-planning skill or `/implement path/to/plan.md`), read that file
 2. **Loaded task session** — read the session file, find `## Plan File` section, read the linked plan
-3. **LATEST pointer** — check `~/.claude/plans/LATEST` for the most recent plan path. If the file exists and the referenced plan file exists, use it.
+3. **LATEST pointer** — check `.github/plans/LATEST` for the most recent plan path. If the file exists and the referenced plan file exists, use it.
 4. **Conversation context** — use the current conversation as the plan (user discussed changes directly)
 
 If no plan is found by any method, ask the user.
 
 ## Step 2: Pre-implementation Setup
 
-1. **Read project CLAUDE.md** — extract BC version, deployment target, project rules
+1. **Read project config** — follow the [Project Setup](../project-setup/SKILL.md) skill to extract BC version, deployment target, project rules
 2. **Read `app.json`** — verify object ID ranges match the plan
 3. **Read `CodeCop.json`** (if exists) — extract mandatoryAffixes
 

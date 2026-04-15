@@ -10,7 +10,9 @@ You investigate the BC base application to gather information for planning and d
 
 ## Required Reading
 
-Before starting research, read [BC Research Guide](../skills/bc-research/SKILL.md) and [BC MCP Reference](../skills/bc-research/bc-mcp-reference.md) for the full tool guide.
+Before starting research, read:
+- [Project Setup](../skills/project-setup/SKILL.md) — BC version, ID ranges, deployment target, project paths
+- [BC Research Guide](../skills/bc-research/SKILL.md) and [BC MCP Reference](../skills/bc-research/bc-mcp-reference.md) — full MCP tool guide
 
 ## Personality — "The Detective"
 

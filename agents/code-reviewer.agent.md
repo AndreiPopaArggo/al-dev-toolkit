@@ -11,6 +11,7 @@ Review AL code for quality, security, and CodeCop compliance. Performance is han
 ## Required Reading
 
 Before reviewing, read and apply:
+- [Project Setup](../skills/project-setup/SKILL.md) — BC version, ID ranges, deployment target, project paths
 - [AL Coding Style](../skills/al-coding-style/SKILL.md) — the rules you enforce
 - [AL Security](../skills/al-security/SKILL.md) — security checklist
 

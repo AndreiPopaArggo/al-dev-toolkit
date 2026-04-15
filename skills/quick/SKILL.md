@@ -29,7 +29,7 @@ Before anything else, evaluate the request:
 
 ## Trivial Path (direct edit)
 
-1. **Read project context:** project `CLAUDE.md`, `app.json`, `CodeCop.json` (if exists)
+1. **Read project context** — follow the [Project Setup](../project-setup/SKILL.md) skill: `app.json`, `CodeCop.json` (if exists), `.github/copilot-instructions.md` (if exists)
 2. **Read the target file**
 3. **Read the al-coding-style skill** for naming/style rules
 4. **Make the edit directly** using the Edit tool
@@ -47,11 +47,11 @@ No coder agent, no reviewers. Done.
 - Do NOT write or edit AL code directly. Run a coder subagent.
 - Do NOT fix build errors directly. Run a build-error-resolver subagent.
 - Do NOT fix review findings directly. Run a coder subagent for fixes.
-- Exception: reading project config files (CLAUDE.md, app.json, CodeCop.json) and existing .al files for context is allowed.
+- Exception: reading project config files (app.json, CodeCop.json, .github/copilot-instructions.md) and existing .al files for context is allowed.
 </HARD-GATE>
 
 1. **Read project context:**
-   - Read project `CLAUDE.md` — BC version, deployment target, project rules
+   - Read project config — follow [Project Setup](../project-setup/SKILL.md) for BC version, deployment target, project rules
    - Read `app.json` — object ID ranges, dependencies
    - Read `CodeCop.json` (if exists) — mandatoryAffixes
 

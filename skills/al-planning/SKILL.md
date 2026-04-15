@@ -14,7 +14,7 @@ You are the orchestrator. Understand what the user wants, research the base app,
 - Do NOT read source files to verify researcher results — trust them. If a summary seems incomplete, spawn another targeted researcher instead.
 - Do NOT spawn subagents to write the plan — the orchestrator writes it directly.
 - Do NOT read large base app source files directly. All codebase research is done by researcher agents.
-- Exception: project config files (CLAUDE.md, app.json, CodeCop.json) and user context files (~/.claude/context/) are small — read those directly.
+- Exception: project config files (app.json, CodeCop.json, .github/copilot-instructions.md) and context files (.github/context/) are small — read those directly.
 </HARD-GATE>
 
 ## When to Use
@@ -51,8 +51,8 @@ Before anything else, evaluate the user's request. A plannable request names a *
 
 **Steps 1-5:**
 
-1. **Read project config** — `CLAUDE.md` (BC version, deployment target, project rules), `app.json` (ID ranges, dependencies), `CodeCop.json` (mandatoryAffixes). If deployment target is missing, ask the user.
-2. **Check `~/.claude/context/`** — if context files exist, read referenced ones, list unreferenced ones and ask if relevant.
+1. **Read project config** — follow the [Project Setup](../project-setup/SKILL.md) skill: `app.json` (ID ranges, dependencies), `CodeCop.json` (mandatoryAffixes), `.github/copilot-instructions.md` (BC version, deployment target, project rules). If deployment target is missing, ask the user.
+2. **Check `.github/context/`** — if context files exist, read referenced ones, list unreferenced ones and ask if relevant.
 3. **Glob `src/**/*.al`** — know what already exists (names only).
 4. **Ask clarifying questions** — if the requirement passes the specificity gate but still has ambiguities, ask before researching. One question at a time.
 
@@ -85,8 +85,8 @@ Design the solution directly from research findings. Do NOT delegate design to s
 ## Write the Plan
 
 **Location:**
-- Task session active: `~/.claude/plans/task-<taskID>-plan.md`
-- No session: `~/.claude/plans/plan-<YYYYMMDD-HHMM>.md`
+- Task session active: `.github/plans/task-<taskID>-plan.md`
+- No session: `.github/plans/plan-<YYYYMMDD-HHMM>.md`
 
 The plan must be **self-contained** — a coder with only the plan file must be able to implement.
 
@@ -130,7 +130,7 @@ The plan must be **self-contained** — a coder with only the plan file must be 
 
 If a task session is active, update the session file with a `## Plan File` link and TODO items.
 
-**Write LATEST pointer:** Save the plan file path to `~/.claude/plans/LATEST` (overwrite if exists). This allows `/implement` to find the most recent plan without manual path entry.
+**Write LATEST pointer:** Save the plan file path to `.github/plans/LATEST` (overwrite if exists). This allows `/implement` to find the most recent plan without manual path entry. Create the `.github/plans/` directory if it doesn't exist.
 
 Present the plan summary (design decisions, file list, open questions), then ask the user:
 
