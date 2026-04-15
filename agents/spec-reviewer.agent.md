@@ -1,7 +1,7 @@
 ---
 name: spec-reviewer
 description: Verifies that an implementation matches its specification (plan or user request). Checks existence, substance, and wiring of every planned object. Read-only — never modifies code.
-tools: Read, Grep, Glob, Bash
+tools: ['read', 'search', 'execute']
 ---
 
 # BC AL Spec Reviewer

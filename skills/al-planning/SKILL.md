@@ -58,18 +58,19 @@ Before anything else, evaluate the user's request. A plannable request names a *
 
 ## Research
 
-Spawn **parallel researcher agents** (subagent_type: `researcher`) to investigate the base app. You know BC — use your domain knowledge to decide what needs researching.
+Run **parallel subagents using the researcher agent** (with Sonnet) to investigate the base app. You know BC — use your domain knowledge to decide what needs researching.
 
 **Always investigate:**
 - Integration events (OnBefore/OnAfter) in relevant base app codeunits
 - Table structures for relevant base app tables
 - Existing project extensions that touch the same area
+- Extensions from other packages that touch the same base objects (`al_find_references` with `referenceType: extends`)
 
-**Researcher spawn prompts** — the agent definition bakes in the Detective personality and MCP lookup instructions. Only pass:
+**Researcher spawn prompts** — the researcher agent definition bakes in the Detective personality and MCP lookup instructions. Only pass:
 - Project root path
 - The specific research task and focus areas
 
-**Fill gaps before designing.** If research has holes, spawn targeted follow-up researchers. Use `mcp__microsoft-learn__microsoft_docs_search` / `mcp__microsoft-learn__microsoft_docs_fetch` for quick documentation lookups.
+**Fill gaps before designing.** If research has holes, run targeted follow-up researcher subagents. Use `mcp__microsoft-learn__microsoft_docs_search` / `mcp__microsoft-learn__microsoft_docs_fetch` for quick documentation lookups.
 
 ## Design
 
@@ -141,8 +142,8 @@ Present the plan summary (design decisions, file list, open questions), then ask
 >
 > **3) Review first** — I'll stop here. Review the plan, then run `/implement [plan-path]` when ready.
 
-If 1: Spawn an implementation orchestrator (subagent_type: `general-purpose`, model: `opus`) that reads the al-dev-toolkit:al-implementation skill and the plan file. This subagent gets a fresh context window — no research baggage. It handles the full cycle: coders, build, review. Report its results when done.
-If 2: Invoke the al-dev-toolkit:al-implementation skill and execute it directly in this session with the plan already in context.
+If 1: Run a subagent to act as an implementation orchestrator — it reads the al-implementation skill and the plan file. This subagent gets a fresh context window — no research baggage. It handles the full cycle: coders, build, review. Report its results when done.
+If 2: Invoke the al-implementation skill and execute it directly in this session with the plan already in context.
 If 3: Stop.
 
 ## User's Request

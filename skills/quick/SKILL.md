@@ -33,7 +33,7 @@ Before anything else, evaluate the request:
 2. **Read the target file**
 3. **Read the al-coding-style skill** for naming/style rules
 4. **Make the edit directly** using the Edit tool
-5. **Build** using the build command from CLAUDE.md
+5. **Build** by running the default VS Code build task (AL: Package)
    - If errors: fix directly (1 attempt). If still failing, escalate to substantive path.
 6. **Report:** file modified, build status, what changed
 
@@ -44,9 +44,9 @@ No coder agent, no reviewers. Done.
 ## Substantive Path (agent pipeline)
 
 <HARD-GATE>
-- Do NOT write or edit AL code directly. Spawn a coder agent.
-- Do NOT fix build errors directly. Spawn a build-error-resolver agent.
-- Do NOT fix review findings directly. Spawn a coder agent for fixes.
+- Do NOT write or edit AL code directly. Run a coder subagent.
+- Do NOT fix build errors directly. Run a build-error-resolver subagent.
+- Do NOT fix review findings directly. Run a coder subagent for fixes.
 - Exception: reading project config files (CLAUDE.md, app.json, CodeCop.json) and existing .al files for context is allowed.
 </HARD-GATE>
 
@@ -59,32 +59,32 @@ No coder agent, no reviewers. Done.
    - Read those files to understand current state
 
 3. **Implement:**
-   - Spawn a single coder agent (subagent_type: `coder`)
+   - Run a subagent using the **coder** agent with Sonnet
    - **PASTE the user's original request and project context into the coder's prompt** — do not make the coder guess from conversation context
    - Include instruction: "If anything is ambiguous, ask before guessing."
-   - The coder agent has al-coding-style and other skills preloaded via its agent frontmatter.
+   - The coder agent has Required Reading references to al-coding-style and other rules.
    - Coder implements the change directly
 
 4. **Build:**
-   - Run `alc.exe` to compile
-   - If errors: spawn build-error-resolver (subagent_type: `build-error-resolver`)
+   - Run the default VS Code build task (AL: Package) to compile
+   - If errors: run a subagent using the **build-error-resolver** agent with Sonnet
    - Max 3 build-fix cycles
 
 5. **Spec Review:**
-   After successful build, spawn the **spec-reviewer** agent (subagent_type: `spec-reviewer`).
+   After successful build, run a subagent using the **spec-reviewer** agent with Sonnet.
    - **PASTE the user's original request** into the prompt as the spec
    - The agent verifies the implementation matches the request (nothing missing, nothing extra)
-   - **If GAPS:** Spawn a coder agent to fix. Rebuild. Then proceed to step 6.
+   - **If GAPS:** Run a coder subagent to fix. Rebuild. Then proceed to step 6.
    - **If PASS:** Proceed to step 6.
 
 6. **Quality + Performance Review (Parallel):**
-   Spawn TWO parallel agents:
-   - `code-reviewer` — quality, naming, Labels, DataClassification, CodeCop
-   - `performance-reviewer` — SetLoadFields, N+1, FlowField misuse, bulk ops
+   Run TWO parallel subagents (both with Sonnet):
+   - **code-reviewer** — quality, naming, Labels, DataClassification, CodeCop
+   - **performance-reviewer** — SetLoadFields, N+1, FlowField misuse, bulk ops
 
    Verdict resolution: any BLOCK → BLOCK, any FIX FIRST → FIX FIRST. APPROVE only when both approve.
 
-7. **Apply review fixes** (if any), rebuild, do NOT re-run reviewers.
+7. **Apply review fixes** (if any via coder subagent), rebuild, do NOT re-run reviewers.
 
 8. **Report:**
    - Files created/modified

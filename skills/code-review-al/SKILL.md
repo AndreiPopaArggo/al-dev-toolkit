@@ -1,13 +1,14 @@
 ---
 name: code-review-al
-description: Review only changed AL files using an agent team of code-reviewer and performance-reviewer teammates. No code changes are made.
+description: Review only changed AL files using parallel code-reviewer and performance-reviewer subagents. No code changes are made.
 argument-hint: "optional: staged, unstaged, or branch name to diff against"
 disable-model-invocation: true
+tools: ['agent', 'read', 'search']
 ---
 
 # Code Review (Changed Files Only)
 
-Review only the AL files that have been modified, using an **agent team** of code-reviewer and performance-reviewer teammates. This is a **read-only** review — no code changes are made.
+Review only the AL files that have been modified, using parallel **code-reviewer** and **performance-reviewer** subagents. This is a **read-only** review — no code changes are made.
 
 ## Process
 
@@ -19,12 +20,12 @@ Review only the AL files that have been modified, using an **agent team** of cod
    - Filter to only `.al` files
 2. **If no changed AL files** — Report "No AL changes to review" and stop.
 3. **Get diffs** — Run `git diff` for the changed AL files to see the actual modifications.
-4. **Parallel subagent review** — Spawn **TWO parallel subagents** via the Task tool in a **single message** (both **Sonnet 4.6** — set `model: "sonnet"`):
+4. **Parallel subagent review** — Run **TWO parallel subagents** (both with Sonnet):
 
-   | Subagent | Type | Focus |
-   |----------|------|-------|
-   | `code-reviewer` | Quality & Security | naming, error handling, security, CodeCop compliance |
-   | `performance-reviewer` | Performance | SetLoadFields, N+1 queries, FlowField misuse, caching, bulk operations |
+   | Subagent | Focus |
+   |----------|-------|
+   | **code-reviewer** agent | Quality & Security — naming, error handling, security, CodeCop compliance |
+   | **performance-reviewer** agent | Performance — SetLoadFields, N+1 queries, FlowField misuse, caching, bulk operations |
 
    Each subagent receives the list of changed files, the diffs, and instructions to review only, NOT edit or fix anything. Subagents should focus on the changed code but may flag pre-existing issues in the same procedures if critical.
 
@@ -68,7 +69,7 @@ Review only the AL files that have been modified, using an **agent team** of cod
 ## Rules
 
 - **Read-only** — Do NOT edit, write, or fix any files
-- **Parallel subagents** — Always spawn both reviewers as parallel Task subagents, not an agent team (distinct scopes, no communication needed)
+- **Parallel subagents** — Always run both reviewers as parallel subagents (distinct scopes, no communication needed)
 - **Changed files only** — Do not review files that have no modifications
 - **Diff-aware** — Reviewers receive the actual diffs, not just full file contents
-- **All subagents Sonnet 4.6** — Set `model: "sonnet"` on every subagent
+- **All subagents with Sonnet** — Request Sonnet when running each subagent

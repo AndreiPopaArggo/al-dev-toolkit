@@ -1,6 +1,6 @@
 ---
 name: build-fix
-description: "Fix AL build errors one at a time. Use when alc.exe compilation fails."
+description: "Fix AL build errors one at a time. Use when the AL build task fails."
 argument-hint: "[optional: scope or instructions]"
 disable-model-invocation: true
 ---
@@ -11,7 +11,7 @@ Incrementally fix BC AL compiler errors.
 
 ## Workflow
 
-1. **Run AL compiler** using the build command from CLAUDE.md (dynamic alc.exe detection via glob).
+1. **Run AL compiler** by running the default VS Code build task (AL: Package). Check the terminal output for errors.
 
 2. **Parse error output:**
    - Group by file
