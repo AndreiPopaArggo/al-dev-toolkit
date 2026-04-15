@@ -132,7 +132,7 @@ If a task session is active, update the session file with a `## Plan File` link 
 
 **Write LATEST pointer:** Save the plan file path to `~/.claude/plans/LATEST` (overwrite if exists). This allows `/implement` to find the most recent plan without manual path entry.
 
-Present the plan summary (design decisions, file list, open questions), then ask via AskUserQuestion:
+Present the plan summary (design decisions, file list, open questions), then ask the user:
 
 > Plan saved to `[plan-file-path]`. Three options:
 >

@@ -1,16 +1,17 @@
 ---
 name: generate-project-docs
-description: Generate comprehensive project-level documentation using agent teams. Covers data model, business logic, UI, integrations, and base app context.
+description: Generate comprehensive project-level documentation using parallel subagents. Covers data model, business logic, UI, integrations, and base app context.
 disable-model-invocation: true
+tools: ['agent', 'read', 'search']
 ---
 
 # Generate Project Documentation
 
-Generate comprehensive, high-quality documentation for a BC AL project using agent teams. The main agent acts as orchestrator — it does NOT read source files itself. All analysis is delegated to teammates to preserve the orchestrator's context window.
+Generate comprehensive, high-quality documentation for a BC AL project using parallel subagents. The main agent acts as orchestrator — it does NOT read source files itself. All analysis is delegated to subagents to preserve the orchestrator's context window.
 
 ## Phase 0: User Input
 
-Before doing anything else, ask the user these 3 questions using `AskUserQuestion` in a **single call**:
+Before doing anything else, ask the user these 3 questions:
 
 **Question 1 — Audience:**
 - Header: "Audience"
@@ -34,16 +35,16 @@ Store the answers as `AUDIENCE`, `FORMAT`, and `DIAGRAMS` for use in all subsequ
 
 ---
 
-## Phase 1: Discovery (Single Agent — Opus)
+## Phase 1: Discovery (Single Subagent — Opus)
 
-Spawn **1 project-documenter agent (opus)** via the Task tool. Give it this task:
+Run **1 subagent using the project-documenter agent with Opus**. Give it this task:
 
 > Scan the project and return a structured JSON manifest. Do NOT write documentation — only collect facts.
 >
 > 1. Read `app.json` — extract: app name, publisher, ID ranges, version, dependencies
 > 2. Read project `CLAUDE.md` — extract: BC version, conventions, special notes. If BC version is not documented, note "BC_VERSION: UNKNOWN" in the manifest.
 > 3. Glob all `.al` files in the project `src/` folder
-> 4. For each `.al` file, extract (using Grep, not full reads):
+> 4. For each `.al` file, extract (using search, not full reads):
 >    - Object type and name (from `table`, `page`, `codeunit`, `tableextension`, `pageextension`, `enumextension`, `enum`, `report`, `xmlport`, `query`, `interface`, `permissionset` declarations)
 >    - For extensions: the `extends` target name
 >    - For event subscribers: the `[EventSubscriber(...)]` attribute — extract object type, object name, event name
@@ -65,31 +66,29 @@ Spawn **1 project-documenter agent (opus)** via the Task tool. Give it this task
 >
 > Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of WebSearch for any Microsoft documentation lookups. Use WebFetch for URL fetching.
 
-Wait for this agent to complete. Parse its manifest to determine which Phase 2.5 and 2.6 teammates are needed.
+Wait for this subagent to complete. Parse its manifest to determine which Phase 2.5 and 2.6 subagents are needed.
 
 ---
 
-## Phase 2 + 2.5: Core & Base App Analysis (Agent Team)
+## Phase 2 + 2.5: Core & Base App Analysis (Parallel Subagents)
 
-Create **agent team `docs-core`** and spawn all core + base app teammates. All use **Sonnet 4.6** — set `model: "sonnet"` on every teammate.
+Run all core analysis and base app research subagents **in parallel**. All use **Sonnet**.
 
-**Why a team:** The 5 core analyzers investigate different facets of the same codebase — Data Model, Business Logic, UI, Events, Setup — and their findings genuinely overlap. The Event Map teammate traces chains that span codeunits and tables; the UI teammate documents pages that call codeunits and display table data. Real-time messaging lets teammates cross-validate findings and resolve cross-scope questions directly, eliminating the need for a separate cross-reference resolution phase.
+Each subagent prompt must include the **Common Preamble** prepended, then the subagent-specific prompt.
 
-Each teammate prompt must include the **Common Preamble** prepended, then the teammate-specific prompt.
-
-### Common Preamble (include in every teammate prompt)
+### Common Preamble (include in every subagent prompt)
 
 > {MANIFEST}
 >
 > **Audience:** {AUDIENCE}
 >
-> You have full read access to all project files. Look things up yourself first. If you need information that falls within another teammate's scope (e.g., you're analyzing UI and need to understand a codeunit's purpose), **send a targeted message** to that specific teammate. Do not broadcast.
+> You have full read access to all project files. Look things up yourself first. If you encounter cross-scope references you cannot resolve, add them to a `## Needs Context` section at the end of your report.
 >
 > Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of WebSearch for any Microsoft documentation lookups. Use WebFetch for URL fetching.
 
-### Phase 2: Project Analysis (always 5 teammates)
+### Phase 2: Project Analysis (always 5 subagents)
 
-#### Teammate 2A — Data Model
+#### Subagent 2A — Data Model
 
 > You are analyzing the DATA MODEL of this AL project. Read ALL table, table extension, enum, and enum extension files listed in the manifest.
 >
@@ -116,9 +115,9 @@ Each teammate prompt must include the **Common Preamble** prepended, then the te
 > If AUDIENCE is "overview": include field names and purposes only, skip IDs and technical details.
 >
 > Return as a markdown report with `## Tables`, `## Table Extensions`, `## Enums` sections.
-> **Cross-scope questions:** First, try messaging the relevant teammate directly (e.g., ask Teammate 2B about codeunit behavior). Only add to `## Needs Context` if you cannot resolve it via messaging or reading files in your scope.
+> If you encounter cross-scope references you cannot resolve, add them to `## Needs Context`.
 
-#### Teammate 2B — Business Logic
+#### Subagent 2B — Business Logic
 
 > You are analyzing the BUSINESS LOGIC of this AL project. Read ALL codeunit and interface files listed in the manifest.
 >
@@ -142,9 +141,9 @@ Each teammate prompt must include the **Common Preamble** prepended, then the te
 > If AUDIENCE is "overview": describe what each codeunit does in business terms, skip signatures.
 >
 > Return as a markdown report with `## Codeunits`, `## Interfaces`, `## Key Business Flows` sections.
-> **Cross-scope questions:** First, try messaging the relevant teammate directly (e.g., ask Teammate 2A about table structure). Only add to `## Needs Context` if you cannot resolve it via messaging or reading files in your scope.
+> If you encounter cross-scope references you cannot resolve, add them to `## Needs Context`.
 
-#### Teammate 2C — UI Layer
+#### Subagent 2C — UI Layer
 
 > You are analyzing the UI LAYER of this AL project. Read ALL page, page extension, report, and report extension files listed in the manifest.
 >
@@ -170,9 +169,9 @@ Each teammate prompt must include the **Common Preamble** prepended, then the te
 > If AUDIENCE is "overview": describe what each page/report is for in user terms (what screens the user sees, what reports they can print).
 >
 > Return as a markdown report with `## Pages`, `## Page Extensions`, `## Reports` sections.
-> **Cross-scope questions:** First, try messaging the relevant teammate directly (e.g., ask Teammate 2B about codeunit flows). Only add to `## Needs Context` if you cannot resolve it via messaging or reading files in your scope.
+> If you encounter cross-scope references you cannot resolve, add them to `## Needs Context`.
 
-#### Teammate 2D — Event & Integration Map
+#### Subagent 2D — Event & Integration Map
 
 > You are analyzing the EVENT ARCHITECTURE and INTERNAL INTEGRATION patterns of this AL project. Read ALL files in the project, focusing on events and cross-object communication.
 >
@@ -189,9 +188,9 @@ Each teammate prompt must include the **Common Preamble** prepended, then the te
 > If AUDIENCE is "overview": describe the event flows in business terms ("when a sales order is posted, the system automatically...").
 >
 > Return as a markdown report with `## Event Publishers`, `## Event Subscribers`, `## Event Flow Map`, `## Object Dependencies` sections.
-> **Cross-scope questions:** First, try messaging the relevant teammate directly. Only add to `## Needs Context` if you cannot resolve it via messaging or reading files in your scope.
+> If you encounter cross-scope references you cannot resolve, add them to `## Needs Context`.
 
-#### Teammate 2E — Setup & Permissions
+#### Subagent 2E — Setup & Permissions
 
 > You are analyzing the SETUP, CONFIGURATION, and PERMISSIONS of this AL project. Read ALL setup tables, permission sets, install codeunits, and upgrade codeunits listed in the manifest.
 >
@@ -206,15 +205,14 @@ Each teammate prompt must include the **Common Preamble** prepended, then the te
 > If AUDIENCE is "overview": describe what settings are available and what permissions users need.
 >
 > Return as a markdown report with `## Setup Tables`, `## Permission Sets`, `## Install/Upgrade Logic` sections.
-> No `## Needs Context` needed — setup is self-contained.
 
-### Phase 2.5: Base App Research (on-demand — same team `docs-core`)
+### Phase 2.5: Base App Research (on-demand — parallel with Phase 2)
 
-**Only spawn if the manifest shows the corresponding dependencies.** These teammates are part of team `docs-core` alongside the Phase 2 teammates.
+**Only run if the manifest shows the corresponding dependencies.**
 
-#### Teammate 2.5A — Base Tables
+#### Subagent 2.5A — Base Tables
 
-Spawn if Extension Targets contains table extensions.
+Run if Extension Targets contains table extensions.
 
 > You are researching BASE APPLICATION TABLES that this project extends. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
 >
@@ -227,9 +225,9 @@ Spawn if Extension Targets contains table extensions.
 >
 > Return a markdown report: one section per base table, focused on what's relevant to understanding the extensions.
 
-#### Teammate 2.5B — Base Pages
+#### Subagent 2.5B — Base Pages
 
-Spawn if Extension Targets contains page extensions.
+Run if Extension Targets contains page extensions.
 
 > You are researching BASE APPLICATION PAGES that this project extends. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
 >
@@ -241,9 +239,9 @@ Spawn if Extension Targets contains page extensions.
 >
 > Return a markdown report: one section per base page.
 
-#### Teammate 2.5C — Base Events
+#### Subagent 2.5C — Base Events
 
-Spawn if Event Subscribers list is non-empty.
+Run if Event Subscribers list is non-empty.
 
 > You are researching BASE APPLICATION EVENTS that this project subscribes to. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
 >
@@ -257,9 +255,9 @@ Spawn if Event Subscribers list is non-empty.
 >
 > Return a markdown report: one section per subscribed event, with enough context to understand WHY the extension subscribes to it.
 
-#### Teammate 2.5D — Base Codeunits
+#### Subagent 2.5D — Base Codeunits
 
-Spawn if manifest shows references to standard codeunits like "Sales-Post", "Gen. Jnl.-Post Line", etc.
+Run if manifest shows references to standard codeunits like "Sales-Post", "Gen. Jnl.-Post Line", etc.
 
 > You are researching BASE APPLICATION CODEUNITS that this project references or interacts with. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
 >
@@ -275,13 +273,13 @@ Spawn if manifest shows references to standard codeunits like "Sales-Post", "Gen
 
 ## Phase 2.6: External Integration Analysis (on-demand subagents)
 
-**Only spawn if the manifest's Integration Signals section shows the corresponding patterns.** Spawn integration subagents via the Task tool alongside the Phase 2/2.5 batch if possible, or as a second parallel batch if Phase 2 results are needed first. All subagents use **Sonnet 4.6**. Include the Common Preamble in every subagent prompt.
+**Only run if the manifest's Integration Signals section shows the corresponding patterns.** Run integration subagents in parallel alongside Phase 2/2.5 if possible, or as a second parallel batch. All use **Sonnet**. Include the Common Preamble in every subagent prompt.
 
 If no integration signals exist in the manifest, skip this phase entirely.
 
 #### Subagent 2.6A — External APIs
 
-Spawn if HttpClient/HttpRequestMessage files found.
+Run if HttpClient/HttpRequestMessage files found.
 
 > You are analyzing EXTERNAL API INTEGRATIONS in this AL project. Read all files flagged in the manifest as having HttpClient/HttpRequestMessage usage.
 >
@@ -301,7 +299,7 @@ Spawn if HttpClient/HttpRequestMessage files found.
 
 #### Subagent 2.6B — WMS Integration
 
-Spawn if Warehouse table references found.
+Run if Warehouse table references found.
 
 > You are analyzing WAREHOUSE MANAGEMENT (WMS) INTEGRATION in this AL project. Read all files that reference warehouse-related tables and codeunits. Use AL MCP server tools to look up relevant base app warehouse objects.
 >
@@ -319,7 +317,7 @@ Spawn if Warehouse table references found.
 
 #### Subagent 2.6C — CRM Integration
 
-Spawn if Contact/CRM table references found.
+Run if Contact/CRM table references found.
 
 > You are analyzing CRM/CONTACT MANAGEMENT INTEGRATION in this AL project. Read all files that reference Contact, Opportunity, Interaction Log, Segment, or related CRM tables. Use AL MCP server tools to look up relevant base app CRM objects.
 >
@@ -338,7 +336,7 @@ Spawn if Contact/CRM table references found.
 
 #### Subagent 2.6D — Data Exchange
 
-Spawn if XMLports or API pages found.
+Run if XMLports or API pages found.
 
 > You are analyzing DATA EXCHANGE interfaces in this AL project. Read all XMLport and API page files.
 >
@@ -355,23 +353,21 @@ Spawn if XMLports or API pages found.
 
 ---
 
-## Phase 2b: Cross-Reference Resolution (lightweight fallback)
+## Phase 2b: Cross-Reference Resolution
 
-Most cross-scope questions should be resolved in real-time within the `docs-core` team via teammate messaging. This phase is a **fallback** for anything that slipped through.
+After ALL subagents from Phase 2, 2.5, and 2.6 complete, check each output for a `## Needs Context` section.
 
-After ALL teammates from team `docs-core` and all Phase 2.6 subagents complete, check each output for a `## Needs Context` section.
+If any subagent flagged unresolved items in `## Needs Context`:
+1. **First, check if another subagent's output already answers the question.** Often the answer exists in another report.
+2. **Only if the answer is NOT in any existing report**, run targeted micro-subagents with Sonnet using the project-documenter agent to investigate.
 
-If any agent flagged unresolved items in `## Needs Context`:
-1. **First, check if another agent's output already answers the question.** Often the answer exists in a teammate's report.
-2. **Only if the answer is NOT in any existing report**, spawn targeted micro-agents via the Task tool (project-documenter, sonnet) to investigate.
-
-If no agents flagged `## Needs Context`, skip this phase entirely (expected in most cases thanks to team communication).
+If no subagents flagged `## Needs Context`, skip this phase entirely.
 
 ---
 
 ## Phase 3: Diagrams (conditional — Parallel Subagents)
 
-**Only execute if user chose "Yes, include diagrams".** Spawn diagram subagents via the Task tool in a **single message** (parallel Task calls). All use **Sonnet 4.6**. Each subagent receives the relevant Phase 2 reports as input.
+**Only execute if user chose "Yes, include diagrams".** Run diagram subagents **in parallel** (all with Sonnet). Each subagent receives the relevant Phase 2 reports as input.
 
 ### Subagent 3A — ER Diagram (always)
 
@@ -397,7 +393,7 @@ If no agents flagged `## Needs Context`, skip this phase entirely (expected in m
 >
 > Return the Mermaid code blocks with a brief description above each diagram.
 
-### Subagent 3C — Integration Map (only if Phase 2.6 subagents were spawned)
+### Subagent 3C — Integration Map (only if Phase 2.6 subagents were run)
 
 > Using the integration reports (Phase 2.6A-D), generate a Mermaid flowchart showing:
 >
@@ -411,17 +407,17 @@ If no agents flagged `## Needs Context`, skip this phase entirely (expected in m
 
 ---
 
-## Phase 4: Synthesis (Single Agent — Opus)
+## Phase 4: Synthesis (Single Subagent — Opus)
 
-Spawn **1 project-documenter agent (opus)** via the Task tool. Give it:
+Run **1 subagent using the project-documenter agent with Opus**. Give it:
 - ALL reports from Phase 2, 2.5, 2.6, 2b
 - ALL diagrams from Phase 3 (if generated)
 - The user's choices: `AUDIENCE`, `FORMAT`, `DIAGRAMS`
 - The project manifest from Phase 1
 
-### Agent Prompt — Phase 4 Synthesis
+### Subagent Prompt — Phase 4 Synthesis
 
-> You are writing the FINAL DOCUMENTATION for this AL project. You have received analysis reports from multiple specialized teammates. Your job is to synthesize them into a cohesive, well-structured document.
+> You are writing the FINAL DOCUMENTATION for this AL project. You have received analysis reports from multiple specialized subagents. Your job is to synthesize them into a cohesive, well-structured document.
 >
 > **Audience:** {AUDIENCE}
 > **Format:** {FORMAT}
@@ -453,7 +449,7 @@ Spawn **1 project-documenter agent (opus)** via the Task tool. Give it:
 > 7. **Permissions** — what permission sets are needed and who should have them
 >
 > ### Writing rules:
-> - Do NOT copy-paste raw agent reports. Synthesize, restructure, and write cohesive prose.
+> - Do NOT copy-paste raw subagent reports. Synthesize, restructure, and write cohesive prose.
 > - Remove duplication — if the same information appears in multiple reports, merge it.
 > - Add a Table of Contents at the top.
 > - Use consistent heading hierarchy (# for title, ## for main sections, ### for subsections).
@@ -488,22 +484,20 @@ Spawn **1 project-documenter agent (opus)** via the Task tool. Give it:
 ## Error Handling
 
 - If Phase 1 finds **no `.al` files**, report "No AL files found in src/" and stop.
-- AL MCP tools have base app packages pre-loaded — no version check needed before spawning Phase 2.5 teammates.
-- If any teammate fails or returns empty, note it in the final documentation as "[Section unavailable — analysis incomplete]" rather than silently omitting it.
+- AL MCP tools have base app packages pre-loaded — no version check needed before running Phase 2.5 subagents.
+- If any subagent fails or returns empty, note it in the final documentation as "[Section unavailable — analysis incomplete]" rather than silently omitting it.
 - If the project has no extensions to base app (no table/page extensions, no event subscribers), skip Phase 2.5 entirely and note in docs: "This is a standalone extension with no modifications to standard BC objects."
 - If the project has no integration signals, skip Phase 2.6 entirely.
 
 ## Model & Execution Rules
 
-| Phase | Execution | Max agents | Model |
-|-------|-----------|------------|-------|
-| 1 Discovery | Single Task subagent | 1 | **Opus** |
-| 2 + 2.5 Core & Base App | **Agent team `docs-core`** | up to 9 | **Sonnet 4.6** |
-| 2.6 Integration | Parallel Task subagents | up to 4 | **Sonnet 4.6** |
-| 2b Cross-ref | Parallel Task micro-agents (fallback) | variable | **Sonnet 4.6** |
-| 3 Diagrams | Parallel Task subagents | up to 3 | **Sonnet 4.6** |
-| 4 Synthesis | Single Task subagent | 1 | **Opus** |
+| Phase | Execution | Max subagents | Model |
+|-------|-----------|---------------|-------|
+| 1 Discovery | Single subagent | 1 | **Opus** |
+| 2 + 2.5 Core & Base App | Parallel subagents | up to 9 | **Sonnet** |
+| 2.6 Integration | Parallel subagents | up to 4 | **Sonnet** |
+| 2b Cross-ref | Targeted micro-subagents (fallback) | variable | **Sonnet** |
+| 3 Diagrams | Parallel subagents | up to 3 | **Sonnet** |
+| 4 Synthesis | Single subagent | 1 | **Opus** |
 
-**Why team for Phase 2/2.5:** Core analyzers investigate overlapping facets of the same codebase — the Event Map traces chains through codeunits and tables, the UI documents pages that call codeunits and display table data. Real-time messaging lets teammates cross-validate findings and resolve questions directly, eliminating most of Phase 2b.
-
-**Why subagents for Phase 2.6/3:** Integration analyzers (APIs, WMS, CRM) and diagram generators have independent scopes — they don't need to talk to each other. The orchestrator collects their outputs.
+**Coordination model:** All subagents work independently and return reports to the orchestrator. Cross-scope questions are resolved in Phase 2b by checking other subagents' outputs first, then running targeted follow-up subagents if needed.
