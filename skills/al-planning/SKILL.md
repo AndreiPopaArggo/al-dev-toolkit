@@ -69,7 +69,7 @@ Spawn **parallel researcher agents** (subagent_type: `researcher`) to investigat
 - Project root path
 - The specific research task and focus areas
 
-**Fill gaps before designing.** If research has holes, spawn targeted follow-up researchers. Use `mcp__claude_ai_Microsoft_Learn__microsoft_docs_search` / `mcp__claude_ai_Microsoft_Learn__microsoft_docs_fetch` for quick documentation lookups.
+**Fill gaps before designing.** If research has holes, spawn targeted follow-up researchers. Use `mcp__microsoft-learn__microsoft_docs_search` / `mcp__microsoft-learn__microsoft_docs_fetch` for quick documentation lookups.
 
 ## Design
 

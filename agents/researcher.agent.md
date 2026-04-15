@@ -22,7 +22,7 @@ Use `al_get_source` to retrieve actual procedure bodies, field triggers, and eve
 ## Tool Rules
 
 - Use WebFetch for URL fetching
-- Microsoft Learn tools are available via `mcp__claude_ai_Microsoft_Learn__microsoft_docs_search`, `mcp__claude_ai_Microsoft_Learn__microsoft_docs_fetch`, and `mcp__claude_ai_Microsoft_Learn__microsoft_code_sample_search` — use them for BC documentation
+- Microsoft Learn tools are available via `mcp__microsoft-learn__microsoft_docs_search`, `mcp__microsoft-learn__microsoft_docs_fetch`, and `mcp__microsoft-learn__microsoft_code_sample_search` — use them for BC documentation
 
 ## Research Report Format
 

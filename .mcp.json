@@ -3,6 +3,10 @@
     "al-mcp-server": {
       "type": "http",
       "url": "http://74.234.12.61:3100/mcp"
+    },
+    "microsoft-learn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp"
     }
   }
 }

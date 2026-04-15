@@ -63,7 +63,7 @@ Spawn **1 project-documenter agent (opus)** via the Task tool. Give it this task
 >    - `## Event Subscribers` (list: subscriber codeunit → target object → event name)
 >    - `## Integration Signals` (HttpClient files, API pages, XMLports, Warehouse refs, CRM refs)
 >
-> Use `mcp__claude_ai_Microsoft_Learn__microsoft_docs_search` and `mcp__claude_ai_Microsoft_Learn__microsoft_docs_fetch` instead of WebSearch for any Microsoft documentation lookups. Use WebFetch for URL fetching.
+> Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of WebSearch for any Microsoft documentation lookups. Use WebFetch for URL fetching.
 
 Wait for this agent to complete. Parse its manifest to determine which Phase 2.5 and 2.6 teammates are needed.
 
@@ -85,7 +85,7 @@ Each teammate prompt must include the **Common Preamble** prepended, then the te
 >
 > You have full read access to all project files. Look things up yourself first. If you need information that falls within another teammate's scope (e.g., you're analyzing UI and need to understand a codeunit's purpose), **send a targeted message** to that specific teammate. Do not broadcast.
 >
-> Use `mcp__claude_ai_Microsoft_Learn__microsoft_docs_search` and `mcp__claude_ai_Microsoft_Learn__microsoft_docs_fetch` instead of WebSearch for any Microsoft documentation lookups. Use WebFetch for URL fetching.
+> Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of WebSearch for any Microsoft documentation lookups. Use WebFetch for URL fetching.
 
 ### Phase 2: Project Analysis (always 5 teammates)
 

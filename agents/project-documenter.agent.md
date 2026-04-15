@@ -66,8 +66,8 @@ Only use `## Needs Context` when understanding requires tracing business logic t
 When analyzing extensions to the Microsoft base application, use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` when you need actual implementation code (procedure bodies, field triggers).
 
 For Microsoft documentation lookups, use:
-- `mcp__claude_ai_Microsoft_Learn__microsoft_docs_search` — search official Microsoft Learn docs
-- `mcp__claude_ai_Microsoft_Learn__microsoft_docs_fetch` — fetch full page content from Microsoft Learn
+- `mcp__microsoft-learn__microsoft_docs_search` — search official Microsoft Learn docs
+- `mcp__microsoft-learn__microsoft_docs_fetch` — fetch full page content from Microsoft Learn
 - WebFetch — fetch any other URL
 
 Use WebFetch for URL fetching. Prefer Microsoft Learn MCP tools over WebSearch for Microsoft/BC documentation.
