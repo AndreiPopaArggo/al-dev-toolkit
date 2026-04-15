@@ -63,7 +63,7 @@ Only use `## Needs Context` when understanding requires tracing business logic t
 
 ## Base App Research
 
-When analyzing extensions to the Microsoft base application, use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Load packages first: check for `.alpackages` in the working directory; if not found, ask the user for a folder path.
+When analyzing extensions to the Microsoft base application, use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` when you need actual implementation code (procedure bodies, field triggers).
 
 For Microsoft documentation lookups, use:
 - `mcp__claude_ai_Microsoft_Learn__microsoft_docs_search` — search official Microsoft Learn docs

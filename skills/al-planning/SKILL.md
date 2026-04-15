@@ -54,8 +54,7 @@ Before anything else, evaluate the user's request. A plannable request names a *
 1. **Read project config** — `CLAUDE.md` (BC version, deployment target, project rules), `app.json` (ID ranges, dependencies), `CodeCop.json` (mandatoryAffixes). If deployment target is missing, ask the user.
 2. **Check `~/.claude/context/`** — if context files exist, read referenced ones, list unreferenced ones and ask if relevant.
 3. **Glob `src/**/*.al`** — know what already exists (names only).
-4. **Load MCP packages** — check if `.alpackages` exists in the current working directory. If found, `al_packages(action: load, path: ".")`. If not found, use AskUserQuestion to ask for a folder containing .app symbol packages.
-5. **Ask clarifying questions** — if the requirement passes the specificity gate but still has ambiguities, ask before researching. One question at a time.
+4. **Ask clarifying questions** — if the requirement passes the specificity gate but still has ambiguities, ask before researching. One question at a time.
 
 ## Research
 
@@ -69,8 +68,6 @@ Spawn **parallel researcher agents** (subagent_type: `researcher`) to investigat
 **Researcher spawn prompts** — the agent definition bakes in the Detective personality and MCP lookup instructions. Only pass:
 - Project root path
 - The specific research task and focus areas
-
-**Gap-filling:** If researchers report MCP limitations (missing var qualifiers, code bodies), use AskUserQuestion to ask the user for a BC base app source folder, then dispatch a follow-up researcher with that path.
 
 **Fill gaps before designing.** If research has holes, spawn targeted follow-up researchers. Use `mcp__claude_ai_Microsoft_Learn__microsoft_docs_search` / `mcp__claude_ai_Microsoft_Learn__microsoft_docs_fetch` for quick documentation lookups.
 

@@ -216,7 +216,7 @@ Each teammate prompt must include the **Common Preamble** prepended, then the te
 
 Spawn if Extension Targets contains table extensions.
 
-> You are researching BASE APPLICATION TABLES that this project extends. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Load packages first if not loaded.
+> You are researching BASE APPLICATION TABLES that this project extends. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
 >
 > For each table extension in the manifest, look up the base table. Extract:
 > - Table purpose in standard BC
@@ -231,7 +231,7 @@ Spawn if Extension Targets contains table extensions.
 
 Spawn if Extension Targets contains page extensions.
 
-> You are researching BASE APPLICATION PAGES that this project extends. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Load packages first if not loaded.
+> You are researching BASE APPLICATION PAGES that this project extends. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
 >
 > For each page extension in the manifest, look up the base page. Extract:
 > - Page purpose: what business process it serves
@@ -245,7 +245,7 @@ Spawn if Extension Targets contains page extensions.
 
 Spawn if Event Subscribers list is non-empty.
 
-> You are researching BASE APPLICATION EVENTS that this project subscribes to. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Load packages first if not loaded.
+> You are researching BASE APPLICATION EVENTS that this project subscribes to. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
 >
 > For each event subscriber in the manifest, find the publisher procedure in the base app source. Extract:
 > - Which codeunit/table publishes the event
@@ -261,7 +261,7 @@ Spawn if Event Subscribers list is non-empty.
 
 Spawn if manifest shows references to standard codeunits like "Sales-Post", "Gen. Jnl.-Post Line", etc.
 
-> You are researching BASE APPLICATION CODEUNITS that this project references or interacts with. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Load packages first if not loaded.
+> You are researching BASE APPLICATION CODEUNITS that this project references or interacts with. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
 >
 > For each referenced standard codeunit, find and read the source. Extract:
 > - Codeunit purpose: what business process it handles
@@ -488,7 +488,7 @@ Spawn **1 project-documenter agent (opus)** via the Task tool. Give it:
 ## Error Handling
 
 - If Phase 1 finds **no `.al` files**, report "No AL files found in src/" and stop.
-- If **BC_VERSION is UNKNOWN** and base app research is needed, ensure AL MCP packages are loaded for the project before spawning Phase 2.5 teammates.
+- If **BC_VERSION is UNKNOWN** and base app research is needed, verify AL MCP tools are reachable before spawning Phase 2.5 teammates.
 - If any teammate fails or returns empty, note it in the final documentation as "[Section unavailable — analysis incomplete]" rather than silently omitting it.
 - If the project has no extensions to base app (no table/page extensions, no event subscribers), skip Phase 2.5 entirely and note in docs: "This is a standalone extension with no modifications to standard BC objects."
 - If the project has no integration signals, skip Phase 2.6 entirely.

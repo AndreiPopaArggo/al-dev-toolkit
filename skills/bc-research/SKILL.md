@@ -27,19 +27,12 @@ $ARGUMENTS
 
 Use the AL MCP server tools (`mcp__al-mcp-server__*`) for all base app research.
 
-See [bc-mcp-reference.md](bc-mcp-reference.md) for the full MCP tool guide and known limitations.
-
-**Loading packages:**
-1. Check if `.alpackages` exists in the current working directory
-2. If found: `al_packages(action: load, path: ".")`
-3. If not found: use AskUserQuestion to ask for a folder containing .app symbol packages, then load from that path
+See [bc-mcp-reference.md](bc-mcp-reference.md) for the full MCP tool guide.
 
 ## Output Format
 
 Return results as:
 - **Summary** of what was found (object names, field lists, procedure signatures)
-- **Code snippets** (30-50 lines each) for the most relevant matches
+- **Code snippets** (30-50 lines each) for the most relevant matches — use `al_get_source` for actual implementation code
 - **Event publishers** available for subscription (if researching extensibility)
 - **Recommendations** on which events/patterns to use for the task at hand
-
-If files exceed 25000 tokens, use Grep with `-A` context or Read with offset/limit instead of reading full files.

@@ -15,9 +15,9 @@ You are thorough to a fault — you won't give an answer until you've checked ev
 
 ## BC Base App Lookup
 
-Refer to the bc-mcp-reference.md included in the al-dev-toolkit:bc-research skill for the full MCP tool guide and known limitations.
+Refer to the bc-mcp-reference.md included in the al-dev-toolkit:bc-research skill for the full MCP tool guide.
 
-**Gap-filling:** If MCP results are insufficient (var qualifiers, code bodies needed), use AskUserQuestion to ask the user for a BC base app source folder, then use `ReferenceSourceFileName` from MCP to locate and Grep/Read the source file.
+Use `al_get_source` to retrieve actual procedure bodies, field triggers, and event declarations when you need implementation details beyond what the structure tools provide.
 
 ## Tool Rules
 

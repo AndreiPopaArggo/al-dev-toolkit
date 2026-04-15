@@ -6,26 +6,29 @@ The AL MCP server tools (`al_search_objects`, `al_get_object_summary`, etc.) que
 
 | Need | Tool | Notes |
 |------|------|-------|
-| Quick object overview | `al_get_object_summary` | 96% token reduction, categorized procedures |
+| Quick object overview | `al_get_object_summary` | Categorized procedures, key structure |
 | Field listing | `al_search_object_members` (memberType: fields) | Filterable by pattern |
 | Procedure search | `al_search_object_members` (memberType: procedures) | Wildcard patterns |
+| Page control lookup | `al_search_object_members` (memberType: controls, pattern) | Returns full layout path (e.g. content > Item > Base Unit of Measure) |
+| Controls in a fast tab | `al_search_object_members` (memberType: controls, group: "Item") | Restricts to one group subtree |
 | Full object structure | `al_get_object_definition` (summaryMode: false) | Use fieldLimit/procedureLimit |
+| Source code snippet | `al_get_source` (objectName, memberName, memberType) | Actual AL implementation code — procedure bodies, field triggers, etc. |
 | Who extends X? | `al_find_references` (referenceType: extends) | Cross-package |
 | Who uses table X? | `al_find_references` (referenceType: table_usage) | Cross-package |
 | Object search | `al_search_objects` | Pattern + type + package filtering |
 
-## MCP Limitations & Gap-Filling
+## What MCP Provides
 
-The following details are NOT available from MCP:
+- **Full procedure signatures:** parameter names, types with concrete subtypes (Record "Sales Header", Enum "Item Type", Codeunit "Gen. Jnl.-Post Line"), var/by-reference flag, return types with subtypes
+- **Event attributes:** IntegrationEvent, BusinessEvent, EventSubscriber with arguments
+- **Visibility:** IsLocal, IsInternal, IsProtected
+- **Page layout paths:** full control hierarchy (content > group > field) with group filtering
+- **Source code:** procedure bodies, field triggers, and event declarations via `al_get_source`
 
-1. **Parameter types:** `Record` without table name, `Enum` without enum name, `Codeunit` without codeunit name
-2. **ByReference:** Always `false` — cannot detect `var` parameters
-3. **Code bodies:** Not available — structure only (procedure names, params, properties)
-4. **Event execution order:** MCP returns declaration order, not invocation order
+## MCP Limitations
 
-**When gap-filling is needed:** If MCP results are insufficient (e.g., you need exact `var` qualifiers, concrete Record type names, or code bodies), use AskUserQuestion to ask the user for a folder containing BC base app source files. Then use the `ReferenceSourceFileName` from MCP results to locate the file in that folder and Grep/Read for the details.
-
-**Note:** The MCP tools only cover standard BC objects and installed extensions. They do NOT index the developer's custom project code — use Read/Grep on the project files for that.
+- **Event execution order:** MCP returns declaration order, not invocation order
+- **Scope:** Only covers standard BC objects and installed extensions — NOT the developer's custom project code (use Read/Grep for that)
 
 ## Delegating BC Research to Subagents
 
@@ -39,17 +42,9 @@ Use AL MCP server tools (`mcp__al-mcp-server__*`) to look up standard BC base ap
 ### Tool selection:
 - Overview/categories: `al_get_object_summary`
 - Field/procedure search: `al_search_object_members` (memberType: fields|procedures, pattern: "*wildcard*")
+- Page control by name: `al_search_object_members` (memberType: controls, pattern: "*name*") — returns full layout path
+- Controls in a group: `al_search_object_members` (memberType: controls, group: "GroupName")
+- Source code: `al_get_source` (objectName, memberName, memberType: procedure|trigger|field|control)
 - Who extends/uses: `al_find_references` (referenceType: extends|table_usage)
 - Full definition: `al_get_object_definition` (summaryMode: false, use limits)
 ````
-
-**Gap-filling:** If MCP results are insufficient (var qualifiers, code bodies needed), ask the user for a BC source folder path, then use `ReferenceSourceFileName` from MCP to locate and Grep/Read the source file.
-
-## Performance (tested across 7 projects)
-
-| Metric | MCP | Old Index Approach |
-|--------|-----|--------------------|
-| Avg lookup time | ~10s | ~176s |
-| Avg tool calls | ~3 | ~17 |
-| Avg tokens | ~46K | ~54K |
-| Speed advantage | **~17x faster** | — |
