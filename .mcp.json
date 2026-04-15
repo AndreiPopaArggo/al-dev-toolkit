@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "al-mcp-server": {
+      "type": "http",
+      "url": "http://74.234.12.61:3100/mcp"
+    }
+  }
+}

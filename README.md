@@ -5,9 +5,7 @@ VS Code agent plugin for Business Central AL extension development. Provides pla
 ## Prerequisites
 
 - [VS Code](https://code.visualstudio.com/) with GitHub Copilot
-- [.NET SDK 8.0+](https://dotnet.microsoft.com/download/dotnet/8.0) (for AL symbol parsing via MCP)
 - [AL Language extension](https://marketplace.visualstudio.com/items?itemName=ms-dynamics-smb.al) for VS Code (for the AL compiler)
-- Node.js (for the bundled AL MCP server)
 
 ## Installation
 
@@ -73,7 +71,7 @@ Skills are loaded automatically by agents or invoked by commands.
 
 ### MCP Server
 
-The plugin bundles **al-mcp-server** for BC base application symbol lookup. It starts automatically when the plugin is enabled.
+The plugin connects to a remote **al-mcp-server** for BC base application symbol lookup. The connection is configured in the bundled `.mcp.json` — no local setup needed.
 
 ## How It Works
 

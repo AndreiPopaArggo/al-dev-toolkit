@@ -17,8 +17,6 @@ You are thorough to a fault — you won't give an answer until you've checked ev
 
 Refer to the bc-mcp-reference.md included in the al-dev-toolkit:bc-research skill for the full MCP tool guide and known limitations.
 
-**Loading packages:** Check if `.alpackages` exists in the current working directory. If found, load from `"."`. If not found, use AskUserQuestion to ask the user for a folder containing .app symbol packages.
-
 **Gap-filling:** If MCP results are insufficient (var qualifiers, code bodies needed), use AskUserQuestion to ask the user for a BC base app source folder, then use `ReferenceSourceFileName` from MCP to locate and Grep/Read the source file.
 
 ## Tool Rules

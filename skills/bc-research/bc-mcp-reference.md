@@ -1,15 +1,6 @@
 # BC Base App Lookup — AL MCP Server
 
-Use AL MCP server tools for structure, discovery, and cross-references.
-
-## Quick Start
-
-```
-1. Load packages:  al_packages(action: load, path: <folder-with-.alpackages>)
-2. Search/explore: al_search_objects, al_get_object_summary, al_search_object_members
-```
-
-**Loading packages:** Check if `.alpackages` exists in the current working directory. If found, load from `"."`. If not found, use AskUserQuestion to ask the user for a folder containing .app symbol packages.
+The AL MCP server tools (`al_search_objects`, `al_get_object_summary`, etc.) query the **standard BC base application, system application, and installed extensions** — NOT the developer's custom project code. Use them to look up standard BC objects, events, table structures, and procedures. For the developer's own AL code, read the project files directly.
 
 ## Tool Selection
 
@@ -34,6 +25,8 @@ The following details are NOT available from MCP:
 
 **When gap-filling is needed:** If MCP results are insufficient (e.g., you need exact `var` qualifiers, concrete Record type names, or code bodies), use AskUserQuestion to ask the user for a folder containing BC base app source files. Then use the `ReferenceSourceFileName` from MCP results to locate the file in that folder and Grep/Read for the details.
 
+**Note:** The MCP tools only cover standard BC objects and installed extensions. They do NOT index the developer's custom project code — use Read/Grep on the project files for that.
+
 ## Delegating BC Research to Subagents
 
 When spawning researcher agents for BC base app research, include this block:
@@ -41,7 +34,7 @@ When spawning researcher agents for BC base app research, include this block:
 ````
 ## BC Base App Lookup
 
-Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Load packages first: check for `.alpackages` in the working directory; if not found, ask the user for a folder path.
+Use AL MCP server tools (`mcp__al-mcp-server__*`) to look up standard BC base application objects. These tools cover standard BC objects and installed extensions only, NOT the developer's custom project code.
 
 ### Tool selection:
 - Overview/categories: `al_get_object_summary`
