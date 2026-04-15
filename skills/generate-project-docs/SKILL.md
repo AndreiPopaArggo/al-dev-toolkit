@@ -210,7 +210,7 @@ Each teammate prompt must include the **Common Preamble** prepended, then the te
 
 ### Phase 2.5: Base App Research (on-demand — same team `docs-core`)
 
-**Only spawn if the manifest shows the corresponding dependencies. If BC_VERSION is UNKNOWN, ask the user before spawning.** These teammates are part of team `docs-core` alongside the Phase 2 teammates.
+**Only spawn if the manifest shows the corresponding dependencies.** These teammates are part of team `docs-core` alongside the Phase 2 teammates.
 
 #### Teammate 2.5A — Base Tables
 
@@ -488,7 +488,7 @@ Spawn **1 project-documenter agent (opus)** via the Task tool. Give it:
 ## Error Handling
 
 - If Phase 1 finds **no `.al` files**, report "No AL files found in src/" and stop.
-- If **BC_VERSION is UNKNOWN** and base app research is needed, verify AL MCP tools are reachable before spawning Phase 2.5 teammates.
+- AL MCP tools have base app packages pre-loaded — no version check needed before spawning Phase 2.5 teammates.
 - If any teammate fails or returns empty, note it in the final documentation as "[Section unavailable — analysis incomplete]" rather than silently omitting it.
 - If the project has no extensions to base app (no table/page extensions, no event subscribers), skip Phase 2.5 entirely and note in docs: "This is a standalone extension with no modifications to standard BC objects."
 - If the project has no integration signals, skip Phase 2.6 entirely.
