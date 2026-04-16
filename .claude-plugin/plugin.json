@@ -1,6 +1,6 @@
 {
   "name": "al-dev-toolkit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "BC AL development toolkit with planning, implementation, code review, and build workflows for Business Central extensions",
   "author": {
     "name": "Andrei Popa"
