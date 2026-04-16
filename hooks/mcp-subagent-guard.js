@@ -22,9 +22,6 @@ process.stdin.on('end', () => {
     const event = JSON.parse(inputData);
     const toolName = event.tool_name || '';
 
-    // Debug: log every tool name the hook sees
-    process.stderr.write(`[mcp-context-guard] tool_name=${toolName}\n`);
-
     // Only act on al-mcp-server tools
     // Claude Code: mcp__al-mcp-server__*  VS Code: mcp_al_mcp_server_* (hyphens become underscores)
     const isAlMcp = /^mcp_{1,2}al[-_]mcp[-_]server_{1,2}/.test(toolName);
