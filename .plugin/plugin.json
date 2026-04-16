@@ -4,6 +4,5 @@
   "description": "BC AL development toolkit with planning, implementation, code review, and build workflows for Business Central extensions",
   "author": {
     "name": "Andrei Popa"
-  },
-  "keywords": ["business-central", "al", "dynamics-365", "erp"]
+  }
 }

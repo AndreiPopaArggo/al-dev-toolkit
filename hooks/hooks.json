@@ -2,12 +2,8 @@
   "hooks": {
     "PreToolUse": [
       {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/mcp-subagent-guard.js\""
-          }
-        ]
+        "type": "command",
+        "command": "node \"${PLUGIN_ROOT}/hooks/mcp-subagent-guard.js\""
       }
     ],
     "PostToolUse": [
@@ -16,7 +12,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-build-remind.js\""
+            "command": "node \"${PLUGIN_ROOT}/hooks/post-build-remind.js\""
           }
         ]
       },
@@ -25,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-build-remind.js\""
+            "command": "node \"${PLUGIN_ROOT}/hooks/post-build-remind.js\""
           }
         ]
       },
@@ -34,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-build-remind.js\""
+            "command": "node \"${PLUGIN_ROOT}/hooks/post-build-remind.js\""
           }
         ]
       }
