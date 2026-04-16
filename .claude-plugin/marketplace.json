@@ -1,0 +1,20 @@
+{
+  "name": "al-dev-toolkit",
+  "owner": {
+    "name": "Andrei Popa"
+  },
+  "metadata": {
+    "description": "BC AL development toolkit with planning, implementation, code review, and build workflows"
+  },
+  "plugins": [
+    {
+      "name": "al-dev-toolkit",
+      "source": "./",
+      "description": "BC AL development toolkit with planning, implementation, code review, and build workflows for Business Central extensions",
+      "version": "1.0.1",
+      "author": {
+        "name": "Andrei Popa"
+      }
+    }
+  ]
+}
