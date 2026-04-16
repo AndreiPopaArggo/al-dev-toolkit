@@ -48,6 +48,6 @@ process.stdin.on('end', () => {
     }
 
   } catch (e) {
-    // On error, silently exit
+    process.stderr.write(`[post-build-remind] ${e.message}\n`);
   }
 });

@@ -1,6 +1,6 @@
 ---
 name: al-coding-style
-description: "AL coding conventions — variable naming, declaration order, self-reference, error labels, file organization. Auto-triggers when writing or reviewing AL code."
+description: "AL coding conventions — variable naming, declaration order, self-reference, error labels, file organization. Read before writing or reviewing AL code."
 ---
 
 # AL Coding Style
@@ -95,9 +95,11 @@ if _Customer.Find() then
 
 ## Record Operations
 
+- **SetLoadFields before every Find/Get** — see [AL Performance](../al-performance/SKILL.md) for mandatory rules
 - **Find/Get return values always checked** — never assume a record exists
 - **TestField** for mandatory field validation before processing
 - **var parameter** only when the record is modified by the callee
+- **No Commit() in event subscribers** — see [AL Patterns](../al-patterns/SKILL.md)
 
 ```al
 // WRONG — unchecked Find
@@ -130,3 +132,11 @@ Label guidelines:
 - ALL messages must be translatable (no `Locked = true` for user-facing messages)
 - Use `Comment` to explain all placeholders for translators
 - Generic, reusable error patterns are preferred
+
+## Cross-References
+
+These critical rules are detailed in dedicated skills — agents must read them as part of Required Reading:
+- **DataClassification on every field** — see [AL Security](../al-security/SKILL.md) (never use `ToBeClassified` in production)
+- **SetLoadFields before every Find/Get** — see [AL Performance](../al-performance/SKILL.md)
+- **Permission sets** — see [AL Security](../al-security/SKILL.md)
+- **Event patterns & commit rules** — see [AL Patterns](../al-patterns/SKILL.md)

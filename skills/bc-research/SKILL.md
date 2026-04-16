@@ -1,7 +1,7 @@
 ---
 name: bc-research
 description: Research BC base application. Use when anyone asks about standard BC tables, events, procedures, page layouts, or patterns — anything in the Microsoft Business Central base application or system application.
-argument-hint: <research goal>
+argument-hint: "<research goal>"
 ---
 
 # BC Base Application Research

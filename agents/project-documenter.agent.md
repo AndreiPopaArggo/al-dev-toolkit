@@ -1,6 +1,8 @@
 ---
 name: project-documenter
 description: BC AL project documentation specialist. Analyzes AL codebases and produces structured documentation reports. Used by /generate-project-docs skill for deep parallel analysis of data models, business logic, UI, integrations, and base app context.
+model: sonnet
+maxTurns: 25
 tools: ['read', 'search', 'edit', 'execute']
 ---
 

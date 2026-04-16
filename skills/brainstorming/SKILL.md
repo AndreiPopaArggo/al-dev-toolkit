@@ -1,8 +1,7 @@
 ---
 name: brainstorming
-description: "Refine a vague idea into a specific, plannable BC requirement."
+description: "Refine a vague BC idea into a specific, plannable requirement. Use when the user describes a BC feature or change but the scope, approach, or details are unclear — phrases like 'I want something that...', 'maybe we could...', 'how should we handle...'. Do NOT use when the user gives a clear, specific task."
 argument-hint: "<your vague idea>"
-disable-model-invocation: true
 ---
 
 # Brainstorming
@@ -10,9 +9,9 @@ disable-model-invocation: true
 Help the user turn a vague idea into a specific, plannable BC requirement through short, focused conversation.
 
 <HARD-GATE>
-- Do NOT write AL code, create files, or start planning/implementation.
+- Do NOT write AL code (.al files) or start planning/implementation.
 - Do NOT invoke al-planning, al-implementation, or any coding skill.
-- The ONLY outputs are: a refined requirement statement and a suggestion to run `/plan`.
+- The ONLY outputs are: a refined requirement saved to `.github/context/brainstorm-*.md`, and a suggestion to run `/plan`.
 </HARD-GATE>
 
 ## Process

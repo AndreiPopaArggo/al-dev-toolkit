@@ -1,8 +1,7 @@
 ---
 name: al-planning
-description: "Plan before implementing. Use for BC features, multi-object implementations, or unclear requirements."
+description: "Plan a BC feature before implementing it. Use when the user asks for a new feature, multi-object change, or significant AL implementation that needs design — involves 3+ files, new tables/pages/codeunits, event subscriptions, or architectural decisions. Produces a plan file, does NOT write code. Do NOT use for simple 1-2 file changes (use quick) or vague ideas (use brainstorming)."
 argument-hint: "<description of what to build>"
-disable-model-invocation: true
 ---
 
 # AL Planning

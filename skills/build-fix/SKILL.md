@@ -1,8 +1,7 @@
 ---
 name: build-fix
-description: "Fix AL build errors one at a time. Use when the AL build task fails."
+description: "Fix AL compiler errors one at a time. Use when an AL build (AL: Package task or alc.exe) fails with compiler errors, CodeCop warnings (AA0xxx), or AppSource warnings (AS0xxx). Fixes one error, rebuilds, repeats. Do NOT use for runtime errors or business logic bugs."
 argument-hint: "[optional: scope or instructions]"
-disable-model-invocation: true
 ---
 
 # Build Fix Skill

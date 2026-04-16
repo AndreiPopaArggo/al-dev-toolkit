@@ -1,6 +1,7 @@
 ---
 name: generate-project-docs
-description: Generate comprehensive project-level documentation using parallel subagents. Covers data model, business logic, UI, integrations, and base app context.
+description: Generate comprehensive project-level documentation using parallel subagents. Use when asked to document a BC project. Covers data model, business logic, UI, integrations, and base app context.
+argument-hint: "[optional: scope or output preferences]"
 disable-model-invocation: true
 tools: ['agent', 'read', 'search']
 ---

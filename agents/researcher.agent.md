@@ -1,6 +1,8 @@
 ---
 name: researcher
 description: BC base application research specialist. Investigates base app objects, events, table structures, and procedures. Read-only — never modifies project files.
+model: sonnet
+maxTurns: 20
 tools: ['read', 'search', 'execute']
 ---
 

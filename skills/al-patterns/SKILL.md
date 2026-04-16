@@ -294,23 +294,18 @@ end;
 
 ## CommitBehavior Pattern (BC22+)
 
-Use `[CommitBehavior]` attribute instead of manual `Commit()` suppression in posting routines:
+Use `[CommitBehavior]` attribute to suppress commits in posting routines. This replaces manual `Commit()` suppression with a declarative approach:
 
 ```al
-// Wrap posting logic to suppress commits during preview
+// Wrap posting logic — CommitBehavior::Ignore prevents implicit commits
 [CommitBehavior(CommitBehavior::Ignore)]
 local procedure PostWithCommitSuppressed(var pSalesHeader: Record "Sales Header")
 begin
     this.DoPostSalesDocument(pSalesHeader);
 end;
-
-// In posting codeunit - pass SuppressCommit flag through events
-procedure PostDocument(var pSalesHeader: Record "Sales Header")
-begin
-    if not (PreviewMode or SuppressCommit) then
-        Commit();
-end;
 ```
+
+The base app uses `CommitBehavior::Ignore` on posting codeunit wrappers (e.g., `Sales-Post`). When previewing, the caller invokes the suppressed variant so no data is written. Prefer this attribute over manual `Commit()` / `SuppressCommit` flag patterns.
 
 ## GuiAllowed Pattern
 

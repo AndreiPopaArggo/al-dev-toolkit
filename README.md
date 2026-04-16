@@ -6,6 +6,7 @@ VS Code agent plugin for Business Central AL extension development. Provides pla
 
 - [VS Code](https://code.visualstudio.com/) with GitHub Copilot
 - [AL Language extension](https://marketplace.visualstudio.com/items?itemName=ms-dynamics-smb.al) for VS Code (for the AL compiler)
+- [Node.js](https://nodejs.org/) (required by plugin hooks)
 
 ## Installation
 
@@ -33,7 +34,7 @@ Add to your VS Code `settings.json`:
 
 ## What You Get
 
-### Workflow Commands
+### Commands
 
 | Command | Description |
 |---------|-------------|
@@ -42,8 +43,13 @@ Add to your VS Code `settings.json`:
 | `/quick` | Quick implementation for simple 1-2 file changes |
 | `/brainstorm` | Refine a vague idea into a plannable requirement |
 | `/build-fix` | Fix AL build errors one at a time |
+| `/code-review-al` | Review only changed AL files (git diff) |
+| `/project-code-review` | Review all AL files in a folder/project |
+| `/bc-research` | Research BC base application objects and events |
+| `/generate-project-docs` | Generate comprehensive project documentation |
+| `/md-to-pdf` | Convert Markdown to PDF with Mermaid support |
 
-### Skills (14)
+### Skills (16)
 
 Skills are loaded automatically by agents or invoked by commands.
 
@@ -57,6 +63,8 @@ Skills are loaded automatically by agents or invoked by commands.
 
 **Docs:** generate-project-docs, md-to-pdf
 
+**Configuration:** project-setup
+
 ### Agents (7)
 
 | Agent | Role |
@@ -69,9 +77,21 @@ Skills are loaded automatically by agents or invoked by commands.
 | performance-reviewer | Reviews SetLoadFields, N+1, FlowField misuse |
 | spec-reviewer | Verifies implementation matches requirements |
 
-### MCP Server
+### MCP Servers
 
-The plugin connects to a remote **al-mcp-server** for BC base application symbol lookup. The connection is configured in the bundled `.mcp.json` — no local setup needed.
+The plugin connects to two remote MCP servers (configured in `.mcp.json`):
+
+| Server | Purpose |
+|--------|---------|
+| **al-mcp-server** | BC base application symbol lookup (objects, events, source code) |
+| **microsoft-learn** | Official Microsoft Learn documentation search |
+
+### Hooks
+
+| Hook | Event | Purpose |
+|------|-------|---------|
+| **MCP Subagent Guard** | PreToolUse | Denies direct MCP tool calls from the main agent — forces BC base app lookups through a researcher subagent to keep context clean |
+| **Post-Build Reminder** | PostToolUse | Detects successful AL builds and reminds the agent to run code reviewers (quality + performance in parallel) |
 
 ## How It Works
 
