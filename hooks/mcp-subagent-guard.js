@@ -26,7 +26,8 @@ process.stdin.on('end', () => {
     process.stderr.write(`[mcp-context-guard] tool_name=${toolName}\n`);
 
     // Only act on al-mcp-server tools
-    if (!toolName.startsWith('mcp__al-mcp-server__')) {
+    // Claude Code uses double underscores (mcp__al-mcp-server__), VS Code uses single (mcp_al-mcp-server_)
+    if (!toolName.startsWith('mcp__al-mcp-server__') && !toolName.startsWith('mcp_al-mcp-server_')) {
       process.exit(0);
     }
 
