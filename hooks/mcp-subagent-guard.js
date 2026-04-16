@@ -22,6 +22,9 @@ process.stdin.on('end', () => {
     const event = JSON.parse(inputData);
     const toolName = event.tool_name || '';
 
+    // Debug: log every tool name the hook sees
+    process.stderr.write(`[mcp-context-guard] tool_name=${toolName}\n`);
+
     // Only act on al-mcp-server tools
     if (!toolName.startsWith('mcp__al-mcp-server__')) {
       process.exit(0);
