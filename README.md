@@ -1,4 +1,4 @@
-# AL Dev Toolkit
+# AL Dev Toolkit v1.0.1
 
 VS Code agent plugin for Business Central AL extension development. Provides planning, implementation, code review, and build workflows through specialized agents and skills.
 
