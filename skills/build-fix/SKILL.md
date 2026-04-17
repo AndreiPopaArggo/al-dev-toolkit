@@ -37,7 +37,7 @@ Incrementally fix BC AL compiler errors.
 
 ## Optional: Scope via LATEST Plan
 
-If `.github/plans/LATEST` exists and points to a new-format plan (file starts with `---\n`), optionally read its YAML frontmatter to prioritize fixes. Use `objects[].file` as the in-scope file list: errors in those files are "in-feature" and get priority over errors in unrelated files.
+If `.github/plans/LATEST` exists and points to a new-format plan (file starts with `---\n`), optionally read its YAML frontmatter (see [plan-schema.md](../al-planning/plan-schema.md)) to prioritize fixes. Use `objects[].file` as the in-scope file list: errors in those files are "in-feature" and get priority over errors in unrelated files.
 
 This is a passive enhancement — if the LATEST pointer is missing, the plan is legacy prose, or the frontmatter is malformed, proceed as usual with all reported errors.
 

@@ -47,6 +47,8 @@ Trust the YAML for coordinates (id, file path, type, name — the mandatory affi
 
 Implementation: write one file at the YAML-provided `file` path using the YAML-provided `name`, with `id` taken from the YAML (verify it falls within `project.object_id_range` but do not re-check `app.json` — the orchestrator has already validated the range). Implement the contents described in the prose section for your object. Shape A's "implement objects in the sequence specified" and "check app.json" steps do not apply — the orchestrator handles sequencing (DAG dispatch from `depends_on`) and range validation before dispatching you.
 
+See [plan-schema.md](../skills/al-planning/plan-schema.md) for the full field definitions, enum values, and status lifecycle referenced by Shape B.
+
 ## When Given a Targeted Change
 
 1. Read the file(s) to be changed
