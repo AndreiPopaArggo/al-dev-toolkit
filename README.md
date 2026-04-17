@@ -101,6 +101,12 @@ Describe a BC task naturally and the plugin routes it automatically:
 - **Complex feature** → planning → implementation with agent teams
 - **Simple change** → quick implementation with review
 
+## Plan Format
+
+Plans produced by `/plan` start with a YAML frontmatter block (machine-readable object list, dependencies, requirement coverage, status) followed by the traditional prose body (requirement, design decisions, object descriptions). Downstream skills and agents consume the frontmatter for structured dispatch; the prose remains the source of descriptions and code.
+
+Schema and writer discipline are documented in [`skills/al-planning/plan-schema.md`](skills/al-planning/plan-schema.md). Legacy prose-only plans from earlier versions continue to work via format detection.
+
 ## Project Configuration
 
 Each BC project should have a `.github/copilot-instructions.md` or `CLAUDE.md` in the project root with:
