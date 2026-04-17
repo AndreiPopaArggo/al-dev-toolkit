@@ -27,11 +27,25 @@ Apply the preloaded skill rules to ALL code you write. If a rule conflicts with 
 
 ## When Given a Plan
 
+The orchestrator dispatches you with one of two context shapes.
+
+**Shape A — legacy prose plan (no frontmatter):** the full plan text is pasted into your prompt along with a file assignment list.
+
 1. Read the plan fully before starting
 2. Implement objects in the sequence specified
 3. Check `app.json` for ID ranges before assigning object IDs
 4. Create one file per object, named `Name.ObjectType.al`
 5. Place files in existing folders matching the feature (flag uncertainty in output if unsure)
+
+**Shape B — new-format plan (with YAML frontmatter):** the orchestrator pastes the per-object YAML entry AND the prose section for your assigned object(s). You receive:
+
+- `key`, `type`, `id`, `name`, `file`, `extends`, `satisfies` (from YAML `objects[]`)
+- The prose section describing this object's fields, procedures, event subscriptions, and key logic
+- The `project.*` block (bc_version, deployment, object_id_range, mandatory_affixes)
+
+Trust the YAML for coordinates (id, file path, type, name, affix). Trust the prose for contents (what fields, what procedures, what logic). If YAML and prose conflict on coordinates, stop and report the discrepancy to the orchestrator — do not guess.
+
+Implementation steps are the same as Shape A: create one file per object at the specified `file` path using the specified `name`.
 
 ## When Given a Targeted Change
 
