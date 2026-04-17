@@ -59,7 +59,7 @@ Run subagents **using the coder agent with Sonnet** for all coding work.
 **Coder prompt contents depend on plan format.** Legacy prose plans: paste the full plan content into every coder's prompt (do not tell coders to read the plan file). New-format plans: paste only the per-object context described below, not the full plan. Either way, do not ask the coder to read the plan file.
 
 **Every coder prompt must include:**
-- The full plan content (pasted, not a file path)
+- Plan context: the full plan content for legacy prose plans; per-object context (see new-format section below) for new-format plans. Do not tell coders to read the plan file.
 - The assigned file list (which files this coder creates/modifies)
 - Instruction: "If anything in the plan is ambiguous for your assigned files, ask before guessing."
 - Instruction: "Follow all rules from your Required Reading section (al-coding-style, al-patterns, al-performance, al-security)."
