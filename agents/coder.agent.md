@@ -3,7 +3,7 @@ name: coder
 description: BC AL implementation specialist. Writes AL code from a plan or applies targeted changes to existing code. Reads project rules at startup for consistent style.
 model: sonnet
 maxTurns: 15
-tools: ['read', 'search', 'edit', 'execute']
+tools: ['read', 'search', 'edit', 'execute', 'al-mcp-server/*', 'microsoft-learn/*']
 ---
 
 # BC AL Coder

@@ -3,7 +3,7 @@ name: performance-reviewer
 description: BC AL performance review specialist. Reviews AL code exclusively for performance issues — SetLoadFields, N+1 queries, FlowField misuse, missing bulk operations, caching opportunities. Use after writing or modifying AL code, in parallel with code-reviewer.
 model: sonnet
 maxTurns: 10
-tools: ['read', 'search', 'execute']
+tools: ['read', 'search', 'execute', 'al-mcp-server/*', 'microsoft-learn/*']
 ---
 
 # BC AL Performance Reviewer

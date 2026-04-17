@@ -3,7 +3,7 @@ name: code-reviewer
 description: BC AL code review specialist. Reviews AL code for quality, security, and CodeCop compliance. Use after writing or modifying AL code. Performance is handled by the dedicated performance-reviewer agent.
 model: sonnet
 maxTurns: 10
-tools: ['read', 'search', 'execute']
+tools: ['read', 'search', 'execute', 'al-mcp-server/*', 'microsoft-learn/*']
 ---
 
 # BC AL Code Reviewer

@@ -3,7 +3,7 @@ name: spec-reviewer
 description: Verifies that an implementation matches its specification (plan or user request). Checks existence, substance, and wiring of every planned object. Read-only — never modifies code.
 model: sonnet
 maxTurns: 8
-tools: ['read', 'search', 'execute']
+tools: ['read', 'search', 'execute', 'al-mcp-server/*', 'microsoft-learn/*']
 ---
 
 # BC AL Spec Reviewer
