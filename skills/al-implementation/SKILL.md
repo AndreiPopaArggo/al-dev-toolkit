@@ -28,6 +28,21 @@ Check for a plan in this priority order:
 
 If no plan is found by any method, ask the user.
 
+## Step 1b: Parse Plan Format
+
+After reading the plan file, detect its format:
+
+- If the file starts with `---\n`, it is **new-format** — parse the YAML frontmatter block between the first two `---` lines per [plan-schema.md](../al-planning/plan-schema.md). Use YAML as authoritative for:
+  - `objects[]` — what exists, types, IDs, file paths, deps, satisfied requirements
+  - `implementation_sequence` — order of coder dispatch
+  - `requirements[]` — for spec-reviewer input
+  - `project.*` — for pre-implementation config validation
+  - `plan.status` — lifecycle state
+- If the file does NOT start with `---\n`, it is **legacy prose-only** — continue with existing prose-reading behavior (enumerate objects from `### <Name>` headings under `## Objects`).
+- If the frontmatter block exists but is malformed or conflicts with the prose, fall back to prose and emit: "Plan frontmatter appears malformed or out-of-sync; using prose fallback. Consider regenerating."
+
+**Mutate status on dispatch:** before starting Step 3, if the plan is new-format and `plan.status == draft`, update it to `implementing`. After a successful full cycle (Step 8 reached with no blocking reviewer verdicts), update it to `complete`.
+
 ## Step 2: Pre-implementation Setup
 
 1. **Read project config** — follow the [Project Setup](../project-setup/SKILL.md) skill to extract BC version, deployment target, project rules
@@ -46,16 +61,21 @@ Run subagents **using the coder agent with Sonnet** for all coding work.
 - Instruction: "If anything in the plan is ambiguous for your assigned files, ask before guessing."
 - Instruction: "Follow all rules from your Required Reading section (al-coding-style, al-patterns, al-performance, al-security)."
 
-**1-2 files:** Run a single coder subagent with Sonnet.
+**Dispatch sizing (legacy prose plans):**
+- 1-2 files → single coder subagent with Sonnet
+- 3+ files → multiple parallel coder subagents, one per 1-3 files, split by file assignment
 
-**3+ files:** Run **multiple parallel coder subagents** — one per 1-3 files:
-- Split by file assignment, not by object type
-- Each subagent works independently; coordination goes through the orchestrator
+**Dispatch sizing (new-format plans with frontmatter):**
+Use `objects[]` + `depends_on` to compute a DAG. Dispatch independent objects (no unfulfilled deps) in parallel; dispatch dependents only after their prerequisites complete. Respect `implementation_sequence` when it orders objects that are otherwise parallelizable.
 
-Example split for a 6-file task:
-- **Coder A:** Table extension + enum (2 files)
-- **Coder B:** Event subscriber codeunit + service codeunit (2 files)
-- **Coder C:** Page extension + permission set (2 files)
+For each coder, include in the prompt:
+- The `objects[].key`, `type`, `id`, `name`, `file`, `extends`, `satisfies`
+- The full prose section for that object from the plan body
+- The full project config block (`project.*` from frontmatter)
+
+Example split for a 6-file new-format plan where `objects[]` has keys `[CustomerExt, ItemExt, CreditMgt, SalesPostSub, CreditCard, PermissionSet]` with `SalesPostSub.depends_on=[CreditMgt]`:
+- **Wave 1 (parallel):** Coder A → CustomerExt + ItemExt; Coder B → CreditMgt; Coder C → CreditCard + PermissionSet
+- **Wave 2 (sequential after Wave 1):** Coder D → SalesPostSub
 
 After all coders complete, verify no cross-file conflicts (duplicate IDs, mismatched references).
 
@@ -99,11 +119,19 @@ Both agents have their review rules referenced in their Required Reading section
 
 ## Step 8: Report
 
+If the plan is new-format and all of the following are true:
+- Build is green (0 errors)
+- `code-reviewer` and `performance-reviewer` both returned APPROVE
+- `spec-reviewer` returned PASS
+
+then update `plan.status: implementing` → `complete` in the plan file before presenting the summary. If any of those are false, leave status as `implementing` and note the blocking reviewer/build state.
+
 Present a summary:
 - Files created/modified (with object types and IDs)
 - Build status (success / errors remaining)
 - Review findings applied
 - Items from the plan that were skipped or need attention
+- For new-format plans: final `plan.status`
 
 **STOP.** Ask if the user wants anything else.
 
