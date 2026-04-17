@@ -8,25 +8,6 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-build-remind.js\""
-          }
-        ]
-      },
-      {
-        "matcher": "execute/createAndRunTask",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-build-remind.js\""
-          }
-        ]
-      },
-      {
-        "matcher": "execute/runInTerminal",
         "hooks": [
           {
             "type": "command",

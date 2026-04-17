@@ -120,3 +120,22 @@ When creating files, always confirm:
 - No documentation generation unless explicitly requested
 - No refactoring beyond the scope of the change
 - No adding features not in the plan
+
+## Closing Behavior — Build Before Returning
+
+Before returning control, ensure the build is clean or explicitly reported as failing. Your behavior depends on dispatch context, determined in this order:
+
+**1. Check for explicit dispatch marker in your prompt:**
+
+- `[DISPATCH_CONTEXT: orchestrated]` — the caller will run the build after you return. **Do not build yourself** — a per-file build in a parallel dispatch will fail on cross-file dependencies. Report which files you edited and return.
+- `[DISPATCH_CONTEXT: standalone]` — no orchestrator is managing the build. Go to step 3.
+
+**2. No marker present? Infer from prompt shape:**
+
+- Prompt contains Shape A prose plan headings or Shape B YAML frontmatter → assume orchestrated, do not build.
+- Prompt is a freeform user request with no plan shape → assume standalone, go to step 3.
+- When in doubt: assume standalone and build. A redundant build is cheap; a skipped build leaves broken code.
+
+**3. Standalone build-and-fix (required whenever you are not explicitly orchestrated):**
+
+Run the default VS Code build task `AL: Package`. If errors, fix them yourself (minimal diffs, max 3 attempts per error). Loop build → fix → rebuild until 0 errors or your `maxTurns` budget is exhausted. If the budget exhausts with errors remaining, report each remaining error and what was tried — do not return silently with a failing build.

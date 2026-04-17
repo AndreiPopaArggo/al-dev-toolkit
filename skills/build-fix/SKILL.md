@@ -18,22 +18,27 @@ Incrementally fix BC AL compiler errors.
    - Identify error codes (AL0xxx, AA0xxx, AS0xxx)
    - Error format: `FilePath(Line,Column): error AL0123: Message`
 
-3. **For each error:**
+3. **Loop: fix and rebuild until clean.** For each error in priority order:
    - Read the file and show error with surrounding context
    - Explain the issue
    - Apply the fix (smallest possible change)
-   - Re-run build
+   - Re-run build (AL: Package)
    - Verify error resolved
 
-4. **Stop if:**
-   - Fix introduces new errors (rollback the fix, try alternative)
-   - Same error persists after 3 attempts
-   - User requests pause
+   Continue the loop (re-parse new build output if errors remain) until one of these terminal conditions:
+   - Build reports 0 errors — SUCCESS, go to step 5
+   - Same error fails to resolve after 3 attempts — ESCALATE (step 4)
+   - Fix introduces new errors that cannot be resolved — rollback and ESCALATE (step 4)
+   - User requests pause — stop and report current state
 
-5. **Show summary:**
-   - Errors fixed
-   - Errors remaining
-   - Warnings to address (only if user asked for warning fixes)
+4. **Escalate (do not silently exit with errors):**
+   If the loop cannot reach 0 errors, STOP and explicitly report to the user: which errors remain, what was tried, and why each attempt failed. Do not claim success. Do not declare the task done. The build must be clean, or the user must be told it is not.
+
+5. **Report final state:**
+   - Errors fixed (list)
+   - Errors remaining (list — MUST be empty for success)
+   - Warnings addressed (only if user asked for warning fixes)
+   - **Final build status: PASS (0 errors) or FAIL (errors remain)**
 
 ## Optional: Scope via LATEST Plan
 

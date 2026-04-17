@@ -33,9 +33,11 @@ Before anything else, evaluate the request:
 2. **Read the target file**
 3. **Read the al-coding-style skill** for naming/style rules
 4. **Make the edit directly** using the Edit tool
-5. **Build** by running the default VS Code build task (AL: Package)
-   - If errors: fix directly (1 attempt). If still failing, escalate to substantive path.
-6. **Report:** file modified, build status, what changed
+5. **Build and fix until clean** — run the default VS Code build task (AL: Package).
+   - If errors: attempt to fix directly (minimal diffs, up to 3 attempts per error). After each fix, rebuild.
+   - Loop build → fix → rebuild until the build reports 0 errors, OR an error fails to resolve after 3 attempts, OR fixes introduce new errors you cannot resolve.
+   - If the loop cannot reach 0 errors, escalate to the Substantive Path (which dispatches build-error-resolver with max 3 build-fix cycles) — do not declare done with a failing build.
+6. **Report:** file modified, build status (must be PASS), what changed
 
 No coder agent, no reviewers. Done.
 
@@ -60,12 +62,14 @@ No coder agent, no reviewers. Done.
 
 3. **Implement:**
    - Run a subagent using the **coder** agent with Sonnet
+   - **Include the dispatch marker `[DISPATCH_CONTEXT: orchestrated]` at the top of the coder's prompt** — this skill runs the build in Step 4, so the coder must NOT build itself.
    - **PASTE the user's original request and project context into the coder's prompt** — do not make the coder guess from conversation context
    - Include instruction: "If anything is ambiguous, ask before guessing."
    - The coder agent has Required Reading references to al-coding-style and other rules.
    - Coder implements the change directly
 
-4. **Build:**
+4. **Build (MANDATORY after code changes):**
+   - Building is mandatory after any coder subagent edits — do not skip to review without a clean build.
    - Run the default VS Code build task (AL: Package) to compile
    - If errors: run a subagent using the **build-error-resolver** agent with Sonnet
    - Max 3 build-fix cycles
@@ -74,7 +78,7 @@ No coder agent, no reviewers. Done.
    After successful build, run a subagent using the **spec-reviewer** agent with Sonnet. Step 6 MUST NOT start until this step returns PASS.
    - **PASTE the user's original request** into the prompt as the spec (user-request input form — no plan frontmatter, so Requirement Coverage does not run; the agent verifies EXISTS / SUBSTANTIVE / WIRED against the request)
    - The agent verifies the implementation matches the request (nothing missing, nothing extra)
-   - **If GAPS:** Run a coder subagent to fix. Rebuild. Re-run spec-reviewer. Repeat up to **3 times**. If still GAPS after 3 attempts, STOP and escalate to the user with outstanding gaps — do not proceed to step 6 and do not silently accept the gaps.
+   - **If GAPS:** Run a coder subagent to fix (include `[DISPATCH_CONTEXT: orchestrated]` in the coder's prompt — this skill handles the rebuild below). Rebuild. Re-run spec-reviewer. Repeat up to **3 times**. If still GAPS after 3 attempts, STOP and escalate to the user with outstanding gaps — do not proceed to step 6 and do not silently accept the gaps.
    - **If PASS:** Proceed to step 6.
 
    **Do not shortcut this step.** Code-reviewer and performance-reviewer verify how code is built; spec-reviewer verifies that the right code was built.
@@ -86,7 +90,13 @@ No coder agent, no reviewers. Done.
 
    Verdict resolution: any BLOCK → BLOCK, any FIX FIRST → FIX FIRST. APPROVE only when both approve.
 
-7. **Apply review fixes** (if any via coder subagent), rebuild, do NOT re-run reviewers.
+7. **Apply review fixes and verify (if any findings):**
+   - Dispatch a coder subagent to apply the fixes (include `[DISPATCH_CONTEXT: orchestrated]` in the coder's prompt — this skill handles the rebuild below).
+   - Rebuild (AL: Package) — if errors, dispatch build-error-resolver (max 3 build-fix cycles) until clean.
+   - Re-run code-reviewer and performance-reviewer in parallel **ONCE** to verify the fixes landed correctly.
+     - If both APPROVE → proceed to step 8.
+     - If new BLOCK or FIX FIRST findings → STOP and escalate to the user with the outstanding findings. Do not loop reviewers again (prevents infinite review cycles).
+   - **Post-fix spot-check:** After code-reviewer and performance-reviewer both APPROVE, read the modified files and verify the fixes didn't break alignment with the user's original request — does the implementation still do what was asked? This is a quick read, not a full spec-reviewer re-run.
 
 8. **Report:**
    - Files created/modified

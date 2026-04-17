@@ -59,6 +59,7 @@ Run subagents **using the coder agent with Sonnet** for all coding work.
 **Coder prompt contents depend on plan format.** Legacy prose plans: paste the full plan content into every coder's prompt (do not tell coders to read the plan file). New-format plans: paste only the per-object context described below, not the full plan. Either way, do not ask the coder to read the plan file.
 
 **Every coder prompt must include:**
+- The dispatch marker `[DISPATCH_CONTEXT: orchestrated]` at the top of the prompt — tells the coder that this skill will run the build in Step 4 and the coder must NOT build itself (per-file builds in parallel dispatches fail on cross-file dependencies).
 - Plan context: the full plan content for legacy prose plans; per-object context (see new-format section below) for new-format plans. Do not tell coders to read the plan file.
 - The assigned file list (which files this coder creates/modifies)
 - Instruction: "If anything in the plan is ambiguous for your assigned files, ask before guessing."
@@ -82,9 +83,9 @@ Example split for a 6-file new-format plan where `objects[]` has keys `[Customer
 
 After all coders complete, verify no cross-file conflicts (duplicate IDs, mismatched references).
 
-## Step 4: Build
+## Step 4: Build (MANDATORY after code changes)
 
-Run the default VS Code build task (AL: Package) to compile. Check the terminal output for errors.
+Building is **mandatory** after any coder subagent edits — do not skip to review without a clean build. Run the default VS Code build task (AL: Package) to compile. Check the terminal output for errors.
 
 If errors occur, run a **subagent using the build-error-resolver agent with Sonnet** to fix them.
 
@@ -96,7 +97,7 @@ After a **successful build**, run a **subagent using the spec-reviewer agent wit
 
 **PASTE the full plan content into the spec-reviewer's prompt.** The agent has its own verification protocol (COVERAGE / EXISTS / SUBSTANTIVE / WIRED — see the agent's own skill file). For new-format plans with `requirements[]`, the agent runs a deterministic Requirement Coverage check against `objects[].satisfies` before per-object verification.
 
-**If GAPS:** Run a coder subagent to fix spec gaps. Rebuild to verify fixes compile. Then re-run spec-reviewer. Repeat up to **3 times**. If still GAPS after 3 attempts, STOP and escalate to the user with the outstanding gaps — do not proceed to Step 6 and do not silently accept the gaps.
+**If GAPS:** Run a coder subagent to fix spec gaps (include `[DISPATCH_CONTEXT: orchestrated]` in the coder's prompt — this skill handles the rebuild below). Rebuild to verify fixes compile. Then re-run spec-reviewer. Repeat up to **3 times**. If still GAPS after 3 attempts, STOP and escalate to the user with the outstanding gaps — do not proceed to Step 6 and do not silently accept the gaps.
 
 **If PASS:** Proceed to Step 6.
 
@@ -115,12 +116,14 @@ Both agents have their review rules referenced in their Required Reading section
 
 **Verdict resolution:** If either says BLOCK → BLOCK. If either says FIX FIRST → FIX FIRST. APPROVE only when both approve.
 
-## Step 7: Apply Review Fixes
+## Step 7: Apply Review Fixes and Verify
 
-- If reviewers find issues, run a coder subagent to apply fixes
-- Rebuild to verify fixes compile
-- Do NOT re-run full reviewers after fixes (avoid infinite loop)
-- **Post-fix spot-check:** After rebuild passes, read the modified files and verify the review fixes didn't break spec compliance — do the files still implement the plan's requirements? This is a quick read, not a full spec-reviewer re-run.
+- If reviewers find issues, run a coder subagent to apply fixes (include `[DISPATCH_CONTEXT: orchestrated]` in the coder's prompt — this skill handles the rebuild below)
+- Rebuild (AL: Package) — if errors, dispatch build-error-resolver (max 3 build-fix cycles) until clean. Building after code fixes is **mandatory**.
+- Re-run code-reviewer and performance-reviewer in parallel **ONCE** to verify the fixes landed correctly
+  - If both APPROVE → proceed to Step 8
+  - If new BLOCK or FIX FIRST findings → STOP and escalate to the user with the outstanding findings. Do not loop reviewers again (prevents infinite review cycles).
+- **Post-fix spot-check:** After the verification reviewers return APPROVE, read the modified files and verify the fixes didn't break spec compliance — do the files still implement the plan's requirements? This is a quick read, not a full spec-reviewer re-run.
 
 ## Step 8: Report
 
