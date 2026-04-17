@@ -59,7 +59,7 @@ open_questions: []                  # free-text strings; empty if none
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
-| `plan.id` | string | yes | Correlates to filename. Format: `plan-YYYYMMDD-HHMM` |
+| `plan.id` | string | yes | Correlates to filename stem. Format: `plan-YYYYMMDD-HHMM` by default. When a task session is active and the plan is written to `.github/plans/task-<taskID>-plan.md`, `plan.id` takes the form `task-<taskID>-plan`. |
 | `plan.created` | ISO 8601 timestamp | yes | UTC |
 | `plan.feature` | string | yes | Short human-readable feature name |
 | `plan.status` | enum | yes | `draft` \| `implementing` \| `complete` |
@@ -84,7 +84,9 @@ Optional section. If present, every entry must be referenced by at least one `ob
 
 ### `research_topics_covered`
 
-List of free-text strings describing what researcher subagents already investigated. Consumed by future parallel-research dedup. May be empty.
+List of free-text strings describing what researcher subagents already investigated. Consumed by future parallel-research dedup.
+
+The key must be present; use `[]` if no research has been done yet.
 
 ### `objects`
 
@@ -105,9 +107,17 @@ The list of AL objects the plan will create. **The core of the frontmatter.**
 
 Ordered list of object keys. Kept even though derivable from `depends_on` — lets the planner override the default topological order when there's a human reason.
 
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `implementation_sequence` | list of object keys | yes | Ordered list. Every entry must reference an existing `objects[].key`. May override the default topological sort from `depends_on` |
+
 ### `open_questions`
 
 Free-text strings describing unresolved items. `[]` if none.
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `open_questions` | list of strings | yes | Free-text items. `[]` if none |
 
 ## Object type enum
 
@@ -171,6 +181,8 @@ After writing a plan file, run these checks before announcing completion. Fix an
 - [ ] Every `### <Name>` heading in the prose Objects section has a matching YAML entry in `objects[]`
 - [ ] Every entry in `requirements[]` is referenced by at least one `objects[].satisfies`
 - [ ] Every `objects[].id` falls within `project.object_id_range`
+- [ ] Every `objects[].type` is one of the values listed in [Object type enum](#object-type-enum)
+- [ ] Every `objects[].extends` is non-null when `type` is an `*extension` or `pagecustomization`, and null otherwise
 - [ ] Every `objects[].depends_on` entry references an existing `objects[].key` in this plan
 - [ ] Every `implementation_sequence` entry references an existing `objects[].key`
 - [ ] `plan.status` is `draft`
