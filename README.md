@@ -38,10 +38,10 @@ Add to your VS Code `settings.json`:
 
 | Command | Description |
 |---------|-------------|
-| `/plan` | Plan a BC feature before implementing |
-| `/implement` | Implement from a previously created plan |
+| `/al-planning` | Plan a BC feature before implementing |
+| `/al-implementation` | Implement from a previously created plan |
 | `/quick` | Quick implementation for simple 1-2 file changes |
-| `/brainstorm` | Refine a vague idea into a plannable requirement |
+| `/brainstorming` | Refine a vague idea into a plannable requirement |
 | `/build-fix` | Fix AL build errors one at a time |
 | `/code-review-al` | Review only changed AL files (git diff) |
 | `/project-code-review` | Review all AL files in a folder/project |
