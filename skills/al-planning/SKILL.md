@@ -157,14 +157,7 @@ open_questions: []
 [Unresolved items, if any]
 ```
 
-**Writer discipline — run before announcing completion.** After writing the plan file, verify:
-
-- Every `objects[].key` in YAML has a matching `### <Name>` heading in the prose Objects section (and vice versa)
-- Every entry in `requirements[]` is referenced by at least one `objects[].satisfies`
-- Every `objects[].id` falls within `project.object_id_range`
-- Every `objects[].depends_on` entry references a key that exists in this plan
-- Every `implementation_sequence` entry references a key that exists in this plan
-- `plan.status` is `draft`
+**Writer discipline — run before announcing completion.** After writing the plan file, run the full writer discipline checklist in [plan-schema.md](./plan-schema.md) under the "Writer discipline" section. It covers prose/YAML bidirectional matching, requirement coverage, object ID range, `depends_on` and `implementation_sequence` key integrity, `plan.status = draft`, `objects[].type` enum conformance, and `objects[].extends` non-null pairing with extension types.
 
 If any check fails: fix silently if the fix is mechanical (regenerate a missing prose heading, correct an out-of-range ID against `app.json`); ask the user if the fix requires a design decision (e.g., prose mentions an object with no YAML entry and no obvious key/type).
 
