@@ -3,7 +3,7 @@ name: project-documenter
 description: BC AL project documentation specialist. Analyzes AL codebases and produces structured documentation reports. Used by /generate-project-docs skill for deep parallel analysis of data models, business logic, UI, integrations, and base app context.
 model: sonnet
 maxTurns: 25
-tools: ['read', 'search', 'edit', 'execute']
+tools: ['read', 'search', 'edit', 'execute', 'web/fetch']
 ---
 
 # BC AL Project Documenter
@@ -78,9 +78,9 @@ When analyzing extensions to the Microsoft base application, use AL MCP server t
 For Microsoft documentation lookups, use:
 - `mcp__microsoft-learn__microsoft_docs_search` — search official Microsoft Learn docs
 - `mcp__microsoft-learn__microsoft_docs_fetch` — fetch full page content from Microsoft Learn
-- WebFetch — fetch any other URL
+- `web/fetch` — fetch any other URL
 
-Use WebFetch for URL fetching. Prefer Microsoft Learn MCP tools over WebSearch for Microsoft/BC documentation.
+Use `web/fetch` for URL fetching. Prefer Microsoft Learn MCP tools over web search for Microsoft/BC documentation.
 
 ## Report Quality Checklist
 

@@ -65,7 +65,7 @@ Run **1 subagent using the project-documenter agent with Opus**. Give it this ta
 >    - `## Event Subscribers` (list: subscriber codeunit → target object → event name)
 >    - `## Integration Signals` (HttpClient files, API pages, XMLports, Warehouse refs, CRM refs)
 >
-> Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of WebSearch for any Microsoft documentation lookups. Use WebFetch for URL fetching.
+> Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of web search for any Microsoft documentation lookups. Use `web/fetch` for URL fetching.
 
 Wait for this subagent to complete. Parse its manifest to determine which Phase 2.5 and 2.6 subagents are needed.
 
@@ -85,7 +85,7 @@ Each subagent prompt must include the **Common Preamble** prepended, then the su
 >
 > You have full read access to all project files. Look things up yourself first. If you encounter cross-scope references you cannot resolve, add them to a `## Needs Context` section at the end of your report.
 >
-> Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of WebSearch for any Microsoft documentation lookups. Use WebFetch for URL fetching.
+> Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of web search for any Microsoft documentation lookups. Use `web/fetch` for URL fetching.
 
 ### Phase 2: Project Analysis (always 5 subagents)
 
