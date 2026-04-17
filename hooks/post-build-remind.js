@@ -41,7 +41,7 @@ process.stdin.on('end', () => {
       const result = {
         hookSpecificOutput: {
           hookEventName: "PostToolUse",
-          additionalContext: "[Post-Build] Build succeeded. Run code reviewers now (quality + performance in parallel)."
+          additionalContext: "[Post-Build] Build succeeded. Required review order: (1) spec-reviewer FIRST — for new-format plans with requirements[], this runs Requirement Coverage against objects[].satisfies. (2) After spec-reviewer returns PASS, run code-reviewer + performance-reviewer in parallel. Do not declare the task complete before all three reviewers have returned."
         }
       };
       console.log(JSON.stringify(result));
