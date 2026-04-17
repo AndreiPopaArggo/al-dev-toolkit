@@ -43,9 +43,9 @@ The orchestrator dispatches you with one of two context shapes.
 - The prose section describing this object's fields, procedures, event subscriptions, and key logic
 - The `project.*` block (bc_version, deployment, object_id_range, mandatory_affixes)
 
-Trust the YAML for coordinates (id, file path, type, name, affix). Trust the prose for contents (what fields, what procedures, what logic). If YAML and prose conflict on coordinates, stop and report the discrepancy to the orchestrator — do not guess.
+Trust the YAML for coordinates (id, file path, type, name — the mandatory affix is already baked into `name` via `project.mandatory_affixes`). Trust the prose for contents (what fields, what procedures, what logic). If YAML and prose conflict on coordinates, stop and report the discrepancy to the orchestrator — do not guess. If the prose section is under-specified for your object (e.g., a `satisfies` requirement has no described implementation, or a declared field has no type), stop and report — do not invent content.
 
-Implementation steps are the same as Shape A: create one file per object at the specified `file` path using the specified `name`.
+Implementation: write one file at the YAML-provided `file` path using the YAML-provided `name`, with `id` taken from the YAML (verify it falls within `project.object_id_range` but do not re-check `app.json` — the orchestrator has already validated the range). Implement the contents described in the prose section for your object. Shape A's "implement objects in the sequence specified" and "check app.json" steps do not apply — the orchestrator handles sequencing (DAG dispatch from `depends_on`) and range validation before dispatching you.
 
 ## When Given a Targeted Change
 
