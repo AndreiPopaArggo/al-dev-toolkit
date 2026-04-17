@@ -89,16 +89,48 @@ Design the solution directly from research findings. Do NOT delegate design to s
 
 The plan must be **self-contained** — a coder with only the plan file must be able to implement.
 
-**Plan format:**
+**Plan format — YAML frontmatter + prose.**
+
+The file starts with a YAML frontmatter block (machine-readable) followed by the prose body (human-readable). The frontmatter shape, field reference, object type enum, status lifecycle, authority rule, and writer discipline checklist are defined in [plan-schema.md](./plan-schema.md) — read it before writing a plan.
+
+Skeleton:
 
 ```
-# Plan: [Feature Name]
+---
+plan:
+  id: plan-YYYYMMDD-HHMM
+  created: <ISO 8601 UTC>
+  feature: "[Feature Name]"
+  status: draft
 
-**Created:** YYYY-MM-DD HH:MM
-**BC Version:** [version]
-**Deployment:** [SaaS/OnPrem/Both]
-**Object ID Range:** [from app.json]
-**Mandatory Affixes:** [from CodeCop.json]
+project:
+  bc_version: "[version]"
+  deployment: [SaaS|OnPrem|Both]
+  object_id_range: [<min>, <max>]
+  mandatory_affixes: [<affixes from CodeCop.json>]
+
+requirements:
+  - id: R1
+    text: "..."
+
+research_topics_covered:
+  - "..."
+
+objects:
+  - key: <StableKey>
+    type: <object type>
+    id: <int>
+    name: "<Exact AL Object Name>"
+    file: "src/<folder>/<Name>.<Type>.al"
+    extends: <null or "BaseName">
+    depends_on: []
+    satisfies: [R1]
+
+implementation_sequence: [<keys in order>]
+open_questions: []
+---
+
+# Plan: [Feature Name]
 
 ## Requirement
 [User's request, clarified]
@@ -124,6 +156,17 @@ The plan must be **self-contained** — a coder with only the plan file must be 
 ## Open Questions
 [Unresolved items, if any]
 ```
+
+**Writer discipline — run before announcing completion.** After writing the plan file, verify:
+
+- Every `objects[].key` in YAML has a matching `### <Name>` heading in the prose Objects section (and vice versa)
+- Every entry in `requirements[]` is referenced by at least one `objects[].satisfies`
+- Every `objects[].id` falls within `project.object_id_range`
+- Every `objects[].depends_on` entry references a key that exists in this plan
+- Every `implementation_sequence` entry references a key that exists in this plan
+- `plan.status` is `draft`
+
+If any check fails: fix silently if the fix is mechanical (regenerate a missing prose heading, correct an out-of-range ID against `app.json`); ask the user if the fix requires a design decision (e.g., prose mentions an object with no YAML entry and no obvious key/type).
 
 ## Handoff
 
