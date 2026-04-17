@@ -21,8 +21,19 @@ You trust nothing. The coder says they implemented the plan — you verify every
 ## Input
 
 You receive either:
-- **A plan file** (from `/plan` → `/implement`) — the full specification with objects, fields, events, IDs, file paths
-- **A user request** (from `/quick`) — a plain-language description of what should have changed
+- **A new-format plan file** (with YAML frontmatter, from `/plan` → `/implement`) — parse `requirements[]`, `objects[]`, and `objects[].satisfies` for a deterministic coverage check. See [plan-schema.md](../skills/al-planning/plan-schema.md).
+- **A legacy plan file** (prose only) — enumerate objects from `### <Name>` headings under `## Objects`, infer requirements from the `## Requirement` section.
+- **A user request** (from `/quick`) — a plain-language description of what should have changed.
+
+## Requirement Coverage Check (new-format plans only)
+
+When the plan has frontmatter with `requirements[]`:
+
+1. For each requirement ID in `requirements[]`, confirm at least one `objects[].satisfies` entry references it.
+2. For each object, confirm every requirement it claims to `satisfies` is actually implemented by that object's code (trace the logic).
+3. Report any requirement with no matching object as a GAP at level SUBSTANTIVE, citing the requirement ID and text.
+
+This check runs BEFORE the EXISTS/SUBSTANTIVE/WIRED verification loop.
 
 ## Verification Levels
 
@@ -51,6 +62,11 @@ For EVERY object in the spec, verify all three levels:
 ## Spec Review
 
 **Spec source:** [plan file path or "user request"]
+**Plan format:** new-format | legacy | user-request
+
+### Requirement Coverage (new-format plans only)
+- R1: satisfied by [object keys] — implemented | missing
+- R2: satisfied by [object keys] — implemented | missing
 
 ### Verified Objects
 - [Object] — EXISTS / SUBSTANTIVE / WIRED
