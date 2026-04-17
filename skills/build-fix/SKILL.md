@@ -35,6 +35,12 @@ Incrementally fix BC AL compiler errors.
    - Errors remaining
    - Warnings to address (only if user asked for warning fixes)
 
+## Optional: Scope via LATEST Plan
+
+If `.github/plans/LATEST` exists and points to a new-format plan (file starts with `---\n`), optionally read its YAML frontmatter to prioritize fixes. Use `objects[].file` as the in-scope file list: errors in those files are "in-feature" and get priority over errors in unrelated files.
+
+This is a passive enhancement — if the LATEST pointer is missing, the plan is legacy prose, or the frontmatter is malformed, proceed as usual with all reported errors.
+
 ## Priority Order
 
 Fix in this order: AL0xxx (compiler) -> dependency errors -> AA0xxx (CodeCop) -> AS0xxx (AppSourceCop)
