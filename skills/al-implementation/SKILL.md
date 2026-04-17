@@ -90,15 +90,17 @@ If errors occur, run a **subagent using the build-error-resolver agent with Sonn
 
 **Max 3 build-fix cycles.** If still failing after 3, stop and report remaining errors to the user.
 
-## Step 5: Spec Review
+## Step 5: Spec Review (MANDATORY gate before Step 6)
 
-After a **successful build**, run a **subagent using the spec-reviewer agent with Sonnet**.
+After a **successful build**, run a **subagent using the spec-reviewer agent with Sonnet**. Step 6 MUST NOT start until this step returns PASS.
 
-**PASTE the full plan content into the spec-reviewer's prompt.** The agent has its own verification protocol (EXISTS / SUBSTANTIVE / WIRED) — just provide the plan as the spec.
+**PASTE the full plan content into the spec-reviewer's prompt.** The agent has its own verification protocol (COVERAGE / EXISTS / SUBSTANTIVE / WIRED — see the agent's own skill file). For new-format plans with `requirements[]`, the agent runs a deterministic Requirement Coverage check against `objects[].satisfies` before per-object verification.
 
-**If GAPS:** Run a coder subagent to fix spec gaps. Rebuild to verify fixes compile. Then proceed to Step 6.
+**If GAPS:** Run a coder subagent to fix spec gaps. Rebuild to verify fixes compile. Then re-run spec-reviewer. Repeat up to **3 times**. If still GAPS after 3 attempts, STOP and escalate to the user with the outstanding gaps — do not proceed to Step 6 and do not silently accept the gaps.
 
 **If PASS:** Proceed to Step 6.
+
+**Do not shortcut this step.** Code-reviewer and performance-reviewer verify how code is built (style, security, performance). Spec-reviewer verifies that the right code was built. Running Step 6 first wastes reviewer budget on code that may need to be rewritten.
 
 ## Step 6: Quality + Performance Review (Parallel)
 
