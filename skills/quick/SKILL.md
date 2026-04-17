@@ -70,12 +70,14 @@ No coder agent, no reviewers. Done.
    - If errors: run a subagent using the **build-error-resolver** agent with Sonnet
    - Max 3 build-fix cycles
 
-5. **Spec Review:**
-   After successful build, run a subagent using the **spec-reviewer** agent with Sonnet.
-   - **PASTE the user's original request** into the prompt as the spec
+5. **Spec Review (MANDATORY gate before step 6):**
+   After successful build, run a subagent using the **spec-reviewer** agent with Sonnet. Step 6 MUST NOT start until this step returns PASS.
+   - **PASTE the user's original request** into the prompt as the spec (user-request input form — no plan frontmatter, so Requirement Coverage does not run; the agent verifies EXISTS / SUBSTANTIVE / WIRED against the request)
    - The agent verifies the implementation matches the request (nothing missing, nothing extra)
-   - **If GAPS:** Run a coder subagent to fix. Rebuild. Then proceed to step 6.
+   - **If GAPS:** Run a coder subagent to fix. Rebuild. Re-run spec-reviewer. Repeat up to **3 times**. If still GAPS after 3 attempts, STOP and escalate to the user with outstanding gaps — do not proceed to step 6 and do not silently accept the gaps.
    - **If PASS:** Proceed to step 6.
+
+   **Do not shortcut this step.** Code-reviewer and performance-reviewer verify how code is built; spec-reviewer verifies that the right code was built.
 
 6. **Quality + Performance Review (Parallel):**
    Run TWO parallel subagents (both with Sonnet):
