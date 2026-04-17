@@ -15,6 +15,7 @@ The main agent acts as a **pure orchestrator**. It runs subagents, runs builds, 
 - Do NOT fix build errors directly. Run a build-error-resolver subagent.
 - Do NOT fix review findings directly. Run a coder subagent for fixes.
 - Exception: reading project config files (app.json, CodeCop.json, .github/copilot-instructions.md) is allowed.
+- Exception: editing the `plan.status` line in a plan file's YAML frontmatter is allowed (and required for lifecycle transitions).
 </HARD-GATE>
 
 ## Step 1: Detect the Plan
@@ -41,7 +42,9 @@ After reading the plan file, detect its format:
 - If the file does NOT start with `---\n`, it is **legacy prose-only** — continue with existing prose-reading behavior (enumerate objects from `### <Name>` headings under `## Objects`).
 - If the frontmatter block exists but is malformed or conflicts with the prose, fall back to prose and emit: "Plan frontmatter appears malformed or out-of-sync; using prose fallback. Consider regenerating."
 
-**Mutate status on dispatch:** before starting Step 3, if the plan is new-format and `plan.status == draft`, update it to `implementing`. After a successful full cycle (Step 8 reached with no blocking reviewer verdicts), update it to `complete`.
+**Mutate status on dispatch:** before starting Step 3, if the plan is new-format and `plan.status == draft`, update it to `implementing`. After a successful full cycle (Step 8 reached with no blocking reviewer verdicts — see Step 8 for exact conditions), update it to `complete`. Use the Edit tool to change only the `status:` line in the frontmatter; do not touch any other field or the prose body.
+
+Note: this skill owns only the `draft → implementing` and `implementing → complete` transitions. The `implementing → draft` rollback (plan revision) is owned by `al-planning`, not this skill.
 
 ## Step 2: Pre-implementation Setup
 
@@ -53,7 +56,7 @@ After reading the plan file, detect its format:
 
 Run subagents **using the coder agent with Sonnet** for all coding work.
 
-**PASTE the full plan content into every coder's prompt.** Do not tell coders to read the plan file — provide the text directly so they start with full context immediately.
+**Coder prompt contents depend on plan format.** Legacy prose plans: paste the full plan content into every coder's prompt (do not tell coders to read the plan file). New-format plans: paste only the per-object context described below, not the full plan. Either way, do not ask the coder to read the plan file.
 
 **Every coder prompt must include:**
 - The full plan content (pasted, not a file path)
@@ -121,10 +124,10 @@ Both agents have their review rules referenced in their Required Reading section
 
 If the plan is new-format and all of the following are true:
 - Build is green (0 errors)
-- `code-reviewer` and `performance-reviewer` both returned APPROVE
+- `code-reviewer` and `performance-reviewer` both returned APPROVE, OR returned non-APPROVE verdicts whose fixes were applied in Step 7 and the post-fix rebuild + spot-check passed
 - `spec-reviewer` returned PASS
 
-then update `plan.status: implementing` → `complete` in the plan file before presenting the summary. If any of those are false, leave status as `implementing` and note the blocking reviewer/build state.
+then update `plan.status: implementing` → `complete` in the plan file (Edit tool, modify only the `status:` line) before presenting the summary. If any of those are false, leave status as `implementing` and note the blocking reviewer/build state.
 
 Present a summary:
 - Files created/modified (with object types and IDs)
