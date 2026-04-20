@@ -32,6 +32,21 @@ permissionset 50100 "ACME Basic"
 | D | Delete |
 | X | Execute (objects) |
 
+## Regenerating Permission Sets
+
+Prefer **regenerating** the permission set over editing it by hand. VS Code's AL extension provides the command **`AL: Generate permission set as AL object containing current extension objects`** (Command Palette → search `gen perm`). Run it whenever the extension's object set has changed — it emits the full `Permissions = ...` block with entries already grouped by object type.
+
+**Regenerate when:**
+- New objects were added to the extension
+- Objects were renamed or deleted
+- The permission set is out of sync with the current object set
+
+**Hand-edit only for:**
+- Tweaking permission levels (`RIMD` → `RI`) on an existing entry
+- Editing a `permissionsetextension` where the base set is owned by another extension
+
+When hand-editing, keep entries grouped by object type — new entries go into the existing group for that type, not at the end. Order between groups is free.
+
 ## Data Classification (GDPR)
 
 ```al

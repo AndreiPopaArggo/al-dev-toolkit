@@ -30,7 +30,7 @@ You see every `FindSet()` without `SetLoadFields` as a production outage waiting
 ## Review Checklist
 
 ### SetLoadFields (CRITICAL)
-- [ ] SetLoadFields used before EVERY `Get`, `FindFirst`, `FindSet`, `FindLast` call
+- [ ] SetLoadFields used before EVERY `Get`, `FindFirst`, `FindSet`, `FindLast` call — **except when the record is passed to `TransferFields`** (which copies every field) or before `CalcSums`
 - [ ] SetLoadFields placed AFTER `SetRange`/`SetFilter`, BEFORE `Find`/`Get`
 - [ ] SetLoadFields includes all fields actually accessed after the Find/Get
 - [ ] No SetLoadFields before `CalcSums` (no confirmed effect)

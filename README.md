@@ -65,7 +65,7 @@ Skills are loaded automatically by agents or invoked by commands.
 
 **Configuration:** project-setup
 
-### Agents (7)
+### Agents (8)
 
 | Agent | Role |
 |-------|------|
@@ -76,6 +76,7 @@ Skills are loaded automatically by agents or invoked by commands.
 | code-reviewer | Reviews code quality, security, CodeCop |
 | performance-reviewer | Reviews SetLoadFields, N+1, FlowField misuse |
 | spec-reviewer | Verifies implementation matches requirements |
+| codeunit-reuse-analyzer | Flags plan codeunits that could merge into existing ones (OnPrem / Both) |
 
 ### MCP Servers
 

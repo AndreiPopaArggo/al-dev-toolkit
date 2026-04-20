@@ -17,6 +17,39 @@ description: "AL coding conventions — variable naming, declaration order, self
 
 **Global variables (codeunit/table-level `var` block) get NO prefix.** Labels follow the same prefix rules as other variables.
 
+## Variable Scope (Global vs Local)
+
+Declare variables and Labels at the **narrowest scope where they are used**. If something is referenced by only one procedure, put it in that procedure's `var` block — not in the object-level `var`.
+
+| Used from | Declare where |
+|-----------|---------------|
+| Multiple procedures in the object | Object-level `var` (global) |
+| One procedure only | That procedure's `var` (local) |
+
+This applies to variables, Labels, and temp records. A Label used by only one procedure moves to that procedure's local `var` and picks up the `_` prefix per the prefix rules above.
+
+```al
+// WRONG — RatingCalcErr used only inside CalculateRating, should be local
+codeunit 50100 "Rating Management"
+{
+    var
+        RatingCalcErr: Label 'Rating cannot be calculated for %1', Comment = '%1 = Customer No.';
+
+    procedure CalculateRating(pCustomerNo: Code[20]): Decimal
+    begin
+        Error(RatingCalcErr, pCustomerNo);
+    end;
+}
+
+// RIGHT — local to the one procedure that uses it
+procedure CalculateRating(pCustomerNo: Code[20]): Decimal
+var
+    _RatingCalcErr: Label 'Rating cannot be calculated for %1', Comment = '%1 = Customer No.';
+begin
+    Error(_RatingCalcErr, pCustomerNo);
+end;
+```
+
 ## Variable Casing by Type
 
 | Type | Casing | Examples |
@@ -61,6 +94,26 @@ field(50100; "Auto-Assign Lot No. KRL"; Boolean)
     Caption = 'Auto-Assign Lot No.';
 }
 ```
+
+## Blank Captions
+
+Blank captions — a single space like `Caption = ' '` — exist only for UI layout (e.g., intentionally empty column headers) and are not user-facing text. They **must** be marked `Locked = true` so translators skip them and the AL compiler stops flagging AA0228.
+
+```al
+// WRONG — blank caption without Locked triggers AA0228
+field(50100; "Spacer KRL"; Text[10])
+{
+    Caption = ' ';
+}
+
+// RIGHT
+field(50100; "Spacer KRL"; Text[10])
+{
+    Caption = ' ', Locked = true;
+}
+```
+
+This is the only case where `Locked = true` is allowed on a caption — regular user-facing captions must stay translatable.
 
 ## Self-Reference (`this.`)
 
@@ -132,6 +185,28 @@ Label guidelines:
 - ALL messages must be translatable (no `Locked = true` for user-facing messages)
 - Use `Comment` to explain all placeholders for translators
 - Generic, reusable error patterns are preferred
+
+## `Comment` Property — Placeholders Only
+
+The `Comment` property on Labels, ToolTips, and Captions has exactly one job: explaining placeholders (`%1`, `%2`, ...) to translators. If the string has no placeholders, omit `Comment` entirely. Never emit a placeholder stub like `Comment = '%'` — it adds noise and misleads translators.
+
+```al
+// WRONG — ToolTip has no placeholders, Comment is a meaningless stub
+ToolTip = 'Specifies the value of the Internal Inv. Curr. Factor field.', Comment = '%';
+
+// RIGHT — no placeholders → no Comment
+ToolTip = 'Specifies the value of the Internal Inv. Curr. Factor field.';
+
+// RIGHT — Comment required because placeholders exist
+_RecordNotFoundErr: Label 'Table %1 does not contain %2 = %3.',
+    Comment = '%1 = Table name, %2 = Field name, %3 = Value';
+```
+
+## Build After Editing
+
+Every `.al` edit must be followed by a build (VS Code `AL: Package` task) before the turn ends. Drive **both errors and warnings** on the files you touched to zero — CodeCop (AA0xxx), AppSource (AS0xxx), and compiler warnings count as must-fix unless the user has explicitly accepted one. Do not declare a change done with an unbuilt or warning-laden file.
+
+**Exception:** when you are dispatched as a coder subagent with `[DISPATCH_CONTEXT: orchestrated]` in your prompt, the orchestrator runs the build after you return — do NOT build yourself.
 
 ## Cross-References
 

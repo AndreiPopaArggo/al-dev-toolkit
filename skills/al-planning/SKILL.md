@@ -2,6 +2,7 @@
 name: al-planning
 description: "Plan a BC feature before implementing it. Use when the user asks for a new feature, multi-object change, or significant AL implementation that needs design — involves 3+ files, new tables/pages/codeunits, event subscriptions, or architectural decisions. Produces a plan file, does NOT write code. Do NOT use for simple 1-2 file changes (use quick) or vague ideas (use brainstorming)."
 argument-hint: "<description of what to build>"
+tools: ['agent', 'read', 'search']
 ---
 
 # AL Planning
@@ -160,6 +161,30 @@ open_questions: []
 **Writer discipline — run before announcing completion.** After writing the plan file, run the full writer discipline checklist in [plan-schema.md](./plan-schema.md) under the "Writer discipline" section. It covers prose/YAML bidirectional matching, requirement coverage, object ID range, `depends_on` and `implementation_sequence` key integrity, `plan.status = draft`, `objects[].type` enum conformance, and `objects[].extends` non-null pairing with extension types.
 
 If any check fails: fix silently if the fix is mechanical (regenerate a missing prose heading, correct an out-of-range ID against `app.json`); ask the user if the fix requires a design decision (e.g., prose mentions an object with no YAML entry and no obvious key/type).
+
+## Codeunit Reuse Review (OnPrem / Both only)
+
+Skip this step when `project.deployment == SaaS` — SaaS publishers get unlimited extension ranges, so minting new codeunits per concern is fine. Also skip when the plan has no `objects[]` entries with `type: codeunit` (nothing to review).
+
+When `project.deployment` is `OnPrem` or `Both` **and** the plan contains new codeunits, run a subagent using the **codeunit-reuse-analyzer agent** (with Sonnet). OnPrem object IDs are a finite resource, and many "new" codeunits in a plan can be merged into an existing project codeunit without loss of clarity.
+
+**Dispatch:**
+- Pass the project root path and the plan file path (just written).
+- No plan content pasted — the agent reads the frontmatter and prose directly.
+
+**Response:** a markdown table of verdicts, one row per candidate codeunit — `KEEP_NEW` or `MERGE_INTO <name>` with rationale.
+
+**If every verdict is `KEEP_NEW`:** note the check passed in the handoff summary and continue.
+
+**If any `MERGE_INTO`:** present the verdict table to the user verbatim and ask, merge-by-merge, which to apply. For each accepted merge:
+
+1. Remove the merged codeunit's entry from `objects[]`
+2. Update any other object whose `depends_on` listed the merged key — drop that entry (the target is pre-existing and therefore not tracked in `objects[]`)
+3. Remove the merged key from `implementation_sequence`
+4. In the prose `## Objects` section, move the merged codeunit's description under the target's existing `### <Name>` heading (as new procedures), then delete the merged `### <Name>` heading
+5. Re-run the writer discipline checklist from [plan-schema.md](./plan-schema.md)
+
+Do not apply merges silently — the user decides each one. If the user rejects all merges, leave the plan untouched.
 
 ## Handoff
 

@@ -63,14 +63,17 @@ These are non-negotiable regardless of task:
 - **DataClassification** on every table field (never ToBeClassified)
 - **Labels** for all user-facing strings (never hardcoded text)
 - **Labels with placeholders** using `TableCaption()` / `FieldCaption()` for error messages
+- **`Comment` only for placeholders** — `Comment` explains `%1`, `%2`, ... to translators; omit when the string has none (never `Comment = '%'`)
 - **No Commit()** in event subscribers
-- **SetLoadFields** before every Find/Get call (mandatory)
+- **SetLoadFields** before every Find/Get call (mandatory; skip when the record feeds `TransferFields`)
 - **Find/Get return values** always checked
 - **TestField** for mandatory field validation
 - **var parameters** used correctly (var only when record is modified)
 - **`this.`** for all internal procedure calls within the same object
 - **Labels** follow same prefix rules as other variables (`_` when local, no prefix when global)
 - **Captions exclude mandatory affix** — affix goes in the object/field Name, never in the Caption
+- **Blank captions locked** — `Caption = ' '` or similar whitespace-only captions must include `Locked = true` (compiler warning AA0228 otherwise)
+- **Narrow scope** — declare variables and Labels local to a single procedure when that's the only place they're used; globals are for cross-procedure sharing
 
 ## Variable Naming
 
@@ -138,4 +141,4 @@ Before returning control, ensure the build is clean or explicitly reported as fa
 
 **3. Standalone build-and-fix (required whenever you are not explicitly orchestrated):**
 
-Run the default VS Code build task `AL: Package`. If errors, fix them yourself (minimal diffs, max 3 attempts per error). Loop build → fix → rebuild until 0 errors or your `maxTurns` budget is exhausted. If the budget exhausts with errors remaining, report each remaining error and what was tried — do not return silently with a failing build.
+Run the default VS Code build task `AL: Package`. Fix **both errors AND warnings** on the files you touched — CodeCop (AA0xxx), AppSource (AS0xxx), and compiler warnings count as must-fix unless the user has explicitly accepted one. Use minimal diffs, max 3 attempts per issue. Loop build → fix → rebuild until 0 errors and 0 new warnings on your edited files, or your `maxTurns` budget is exhausted. If the budget exhausts with outstanding errors or warnings, report each one and what was tried — do not return silently with a failing or warning-laden build.

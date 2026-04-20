@@ -48,10 +48,21 @@ codeunit 50100 "Sales Order Processor"
 
 ### Event Subscriber Pattern
 
-**Subscriber procedure naming:** `<Object>_<EventName>_<ClientSuffix>`
+**Subscriber procedure naming:** `<Object>_<EventName>[_<FieldName>]_<ClientSuffix>`
 - `<Object>` — Subscribed-to object name in PascalCase (spaces/dots removed)
-- `<EventName>` — The exact event publisher name
+- `<EventName>` — **Exact** event publisher name from the `[EventSubscriber]` attribute, character-for-character. A procedure named `..._OnAfterValidateEvent_...` that subscribes to `'OnBeforeValidateEvent'` is a bug — the name must match the attribute
+- `<FieldName>` — **Only when the 4th parameter in `[EventSubscriber]` is non-empty** (field-level, action-level, or similar element-scoped events). Field/element name with spaces and dots removed. Omit this segment when the element parameter is `''`
 - `<ClientSuffix>` — Project's `mandatoryAffixes` from `CodeCop.json`
+
+```al
+// Element parameter is empty ('') → 3 segments
+[EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", OnBeforePostSalesOrder, '', false, false)]
+local procedure SalesPost_OnBeforePostSalesOrder_ACME(...)
+
+// Element parameter is a field name ('Item No.') → 4 segments, field name included
+[EventSubscriber(ObjectType::Page, Page::"Transfer Order Subform", 'OnBeforeValidateEvent', 'Item No.', false, false)]
+local procedure TransferOrderSubform_OnBeforeValidateEvent_ItemNo_ACME(var Rec: Record "Transfer Line"; var xRec: Record "Transfer Line")
+```
 
 ```al
 codeunit 50101 "ACME Sales Order Subscriber"

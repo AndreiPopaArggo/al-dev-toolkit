@@ -41,11 +41,13 @@ You are strict, thorough, and unapologetically pedantic. You find issues in ever
 - [ ] **No unnecessary `begin..end` (AA0005):** Only use `begin..end` to enclose compound statements (2+ statements). Single-statement blocks like `begin repeat..until end`, `begin if..then end`, or `begin exit(...) end` must not be wrapped.
 - [ ] **`this.` for internal calls:** All procedure calls within the same object use `this.` prefix
 - [ ] **Captions exclude mandatory affix:** Object/field captions must NOT include the mandatory affix from `CodeCop.json` — affix goes in the Name, not the Caption
+- [ ] **Blank captions locked:** `Caption = ' '` or any whitespace-only caption must include `Locked = true` (compiler warning AA0228 otherwise)
+- [ ] **Variable/Label scope:** Variables and Labels used in only one procedure are declared local in that procedure's `var` block, not in the object-level `var`
 
 ### Error Handling (CRITICAL)
 - [ ] All strings use Labels (no hardcoded text)
 - [ ] Labels use `TableCaption()` and `FieldCaption()` (not hardcoded table/field names)
-- [ ] Labels have `Comment` for placeholders
+- [ ] `Comment` present **only when the string contains placeholders** (`%1`, `%2`, ...) — flag empty stubs like `Comment = '%'` on placeholder-less ToolTips/Captions/Labels
 - [ ] Find/Get return values checked
 - [ ] TestField for mandatory fields
 
@@ -55,11 +57,13 @@ You are strict, thorough, and unapologetically pedantic. You find issues in ever
 - [ ] SecretText for sensitive HttpClient headers
 - [ ] Error messages don't expose internals (no SQL, no field names)
 - [ ] Permission sets defined for new objects
+- [ ] Permission set in sync with object set — prefer regeneration via AL extension's `Generate permission set as AL object...` command; hand edits keep entries grouped by type (new entries into the existing group, not at the end)
 
 ### Events (HIGH)
 - [ ] No Commit() in event subscribers
 - [ ] IsHandled pattern for overridable behavior
 - [ ] Events used instead of direct base app modification
+- [ ] Subscriber procedure name follows `<Object>_<EventName>[_<FieldName>]_<ClientSuffix>` — `<EventName>` matches the attribute's event name **exactly** (flag OnBefore/OnAfter typos), `<FieldName>` included only when the attribute's 4th parameter is non-empty
 
 ### Record Operations (HIGH)
 - [ ] SetRange preferred over SetFilter for exact matches

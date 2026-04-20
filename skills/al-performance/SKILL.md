@@ -14,7 +14,12 @@ description: Use when writing or reviewing AL code that reads from the database.
 
 ## SetLoadFields (Partial Records)
 
-**Mandatory: Use `SetLoadFields` before every `Get`, `FindFirst`, `FindSet`, and `FindLast` call.** Only exception: when you need all fields from the record (rare). Note: `SetLoadFields` has no confirmed effect before `CalcSums` — do not add it there.
+**Mandatory: Use `SetLoadFields` before every `Get`, `FindFirst`, `FindSet`, and `FindLast` call.**
+
+**Exceptions — skip `SetLoadFields` when:**
+- The loaded record is passed to `TransferFields` (copies every field into another record; partial loading would silently transfer empty fields)
+- You genuinely need every field from the record (rare)
+- Before `CalcSums` — no confirmed effect
 
 **Order matters: SetRange → SetLoadFields → SetAutoCalcFields (if needed) → Find**
 
@@ -31,6 +36,12 @@ if _Item.FindSet() then
 _Customer.SetLoadFields(Name, "Credit Limit (LCY)");
 if _Customer.Get(pCustomerNo) then
     _customerName := _Customer.Name;
+
+// CORRECT: skip SetLoadFields when the record feeds TransferFields — it needs all fields
+if _SalesHeader.Get(pDocType, pDocNo) then begin
+    _SalesHeaderArchive.TransferFields(_SalesHeader);
+    _SalesHeaderArchive.Insert();
+end;
 
 // WRONG: No SetLoadFields (loads entire record from DB)
 if _Customer.Get(pCustomerNo) then
@@ -228,7 +239,7 @@ if _Item.FindSet() then
 
 ## Performance Checklist
 
-- [ ] SetLoadFields used before EVERY Get/Find call (mandatory)
+- [ ] SetLoadFields used before EVERY Get/Find call (mandatory — except when the record feeds `TransferFields`, or before `CalcSums`)
 - [ ] SetLoadFields placed AFTER SetRange, BEFORE Find
 - [ ] SetAutoCalcFields used for FlowFields needed across most loop iterations
 - [ ] No FlowFields in SetFilter/SetRange
