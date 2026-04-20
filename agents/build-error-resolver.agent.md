@@ -3,7 +3,7 @@ name: build-error-resolver
 description: BC AL compiler error resolution specialist. Use PROACTIVELY when AL build fails, CodeCop errors occur, or app.json issues arise. Fixes errors with minimal diffs, no architectural changes.
 model: sonnet
 maxTurns: 10
-tools: ['read', 'search', 'edit', 'execute', 'al-mcp-server/*', 'microsoft-learn/*']
+tools: ['read', 'search', 'edit', 'execute', 'vscode', 'al-mcp-server/*', 'microsoft-learn/*']
 ---
 
 # AL Build Error Resolver

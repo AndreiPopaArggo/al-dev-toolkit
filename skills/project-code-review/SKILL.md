@@ -3,7 +3,7 @@ name: project-code-review
 description: Comprehensive AL project code review using parallel subagents. Reviews all AL files for coding conventions, performance, security, and CodeCop compliance. No code changes are made.
 argument-hint: "folder or scope, e.g. src/ or src/Sales"
 disable-model-invocation: true
-tools: ['agent', 'read', 'search']
+tools: ['agent', 'read', 'search', 'vscode']
 ---
 
 # Project Review

@@ -2,7 +2,7 @@
 name: al-implementation
 description: "Implement AL code from a plan. Use when a plan file exists (in .github/plans/ or conversation context) and the user wants to implement it — phrases like 'implement this', 'build it', 'go ahead', 'start coding'. Dispatches coder subagents, builds, and runs reviewers. Do NOT use without a plan — use al-planning first."
 argument-hint: "[optional: additional instructions or plan path]"
-tools: ['agent', 'read', 'search']
+tools: ['agent', 'read', 'search', 'vscode']
 ---
 
 # AL Implementation Skill

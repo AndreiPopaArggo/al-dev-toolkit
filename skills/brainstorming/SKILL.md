@@ -2,7 +2,7 @@
 name: brainstorming
 description: "Refine a vague BC idea into a specific, plannable requirement. Use when the user describes a BC feature or change but the scope, approach, or details are unclear — phrases like 'I want something that...', 'maybe we could...', 'how should we handle...'. Do NOT use when the user gives a clear, specific task."
 argument-hint: "<your vague idea>"
-tools: ['agent', 'read', 'search']
+tools: ['agent', 'read', 'search', 'vscode']
 ---
 
 # Brainstorming
