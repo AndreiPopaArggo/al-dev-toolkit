@@ -5,11 +5,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start-bc-guidance.js\""
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start-bc-guidance.ps1\""
           },
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start-plugin-skills.js\""
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start-plugin-skills.ps1\""
           }
         ]
       }
@@ -17,7 +17,7 @@
     "PreToolUse": [
       {
         "type": "command",
-        "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/mcp-subagent-guard.js\""
+        "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/hooks/mcp-subagent-guard.ps1\""
       }
     ],
     "PostToolUse": [
@@ -25,11 +25,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-build-remind.js\""
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/hooks/post-build-remind.ps1\""
           },
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-al-edit-remind.js\""
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/hooks/post-al-edit-remind.ps1\""
           }
         ]
       }
