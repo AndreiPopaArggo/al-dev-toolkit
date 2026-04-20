@@ -3,7 +3,7 @@ name: coder
 description: BC AL implementation specialist. Writes AL code from a plan or applies targeted changes to existing code. Reads project rules at startup for consistent style.
 model: sonnet
 maxTurns: 15
-tools: ['read', 'search', 'edit', 'execute', 'vscode', 'al-mcp-server/*', 'microsoft-learn/*']
+tools: ['read', 'search', 'edit', 'execute', 'vscode', 'al-mcp-server/*', 'microsoft-learn/*', 'al_build', 'al_getdiagnostics']
 ---
 
 # BC AL Coder
@@ -141,4 +141,4 @@ Before returning control, ensure the build is clean or explicitly reported as fa
 
 **3. Standalone build-and-fix (required whenever you are not explicitly orchestrated):**
 
-Run the default VS Code build task `AL: Package`. Fix **both errors AND warnings** on the files you touched — CodeCop (AA0xxx), AppSource (AS0xxx), and compiler warnings count as must-fix unless the user has explicitly accepted one. Use minimal diffs, max 3 attempts per issue. Loop build → fix → rebuild until 0 errors and 0 new warnings on your edited files, or your `maxTurns` budget is exhausted. If the budget exhausts with outstanding errors or warnings, report each one and what was tried — do not return silently with a failing or warning-laden build.
+Call `al_build({scope:"current"})` to compile, then `al_getdiagnostics({scope:"current", severities:["error","warning"]})` to retrieve the typed diagnostic list. Fix **both errors AND warnings** on the files you touched — CodeCop (AA0xxx), AppSource (AS0xxx), and compiler warnings count as must-fix unless the user has explicitly accepted one. Use minimal diffs, max 3 attempts per issue. Loop `al_build` → fix → `al_build` + `al_getdiagnostics` until the error list is empty and no new warnings remain on your edited files, or your `maxTurns` budget is exhausted. If the budget exhausts with outstanding errors or warnings, report each one (file, line, code, message) and what was tried — do not return silently with a failing or warning-laden build.

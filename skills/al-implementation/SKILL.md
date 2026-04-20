@@ -2,7 +2,7 @@
 name: al-implementation
 description: "Implement AL code from a plan. Use when a plan file exists (in .github/plans/ or conversation context) and the user wants to implement it — phrases like 'implement this', 'build it', 'go ahead', 'start coding'. Dispatches coder subagents, builds, and runs reviewers. Do NOT use without a plan — use al-planning first."
 argument-hint: "[optional: additional instructions or plan path]"
-tools: ['agent', 'read', 'search', 'vscode']
+tools: ['agent', 'read', 'search', 'vscode', 'al_build', 'al_getdiagnostics']
 ---
 
 # AL Implementation Skill
@@ -85,9 +85,12 @@ After all coders complete, verify no cross-file conflicts (duplicate IDs, mismat
 
 ## Step 4: Build (MANDATORY after code changes)
 
-Building is **mandatory** after any coder subagent edits — do not skip to review without a clean build. Run the default VS Code build task (AL: Package) to compile. Check the terminal output for errors.
+Building is **mandatory** after any coder subagent edits — do not skip to review without a clean build.
 
-If errors occur, run a **subagent using the build-error-resolver agent with Sonnet** to fix them.
+1. Call `al_build` with `scope: "current"` to compile and produce the `.app`.
+2. Call `al_getdiagnostics` with `severities: ["error"]` (and `scope: "current"`) to retrieve any errors as a structured list. Do not parse terminal output.
+
+If `al_build` returns `success: false` OR `al_getdiagnostics` returns a non-empty error list, run a **subagent using the build-error-resolver agent with Sonnet** to fix them.
 
 **Max 3 build-fix cycles.** If still failing after 3, stop and report remaining errors to the user.
 
@@ -119,7 +122,7 @@ Both agents have their review rules referenced in their Required Reading section
 ## Step 7: Apply Review Fixes and Verify
 
 - If reviewers find issues, run a coder subagent to apply fixes (include `[DISPATCH_CONTEXT: orchestrated]` in the coder's prompt — this skill handles the rebuild below)
-- Rebuild (AL: Package) — if errors, dispatch build-error-resolver (max 3 build-fix cycles) until clean. Building after code fixes is **mandatory**.
+- Rebuild via `al_build` (`scope: "current"`), then `al_getdiagnostics` (`severities: ["error"]`) — if errors remain, dispatch build-error-resolver (max 3 build-fix cycles) until clean. Building after code fixes is **mandatory**.
 - Re-run code-reviewer and performance-reviewer in parallel **ONCE** to verify the fixes landed correctly
   - If both APPROVE → proceed to Step 8
   - If new BLOCK or FIX FIRST findings → STOP and escalate to the user with the outstanding findings. Do not loop reviewers again (prevents infinite review cycles).

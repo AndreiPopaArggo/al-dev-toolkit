@@ -2,7 +2,7 @@
 name: quick
 description: "Quick implementation for simple 1-2 file changes. Use when the user asks for a small, well-understood AL code change that touches at most 2 files — rename a caption, add a field, fix a property, add a column to a page. Do NOT use for multi-object features, unclear requirements, or anything needing research."
 argument-hint: "<description of change>"
-tools: ['agent', 'read', 'search', 'vscode']
+tools: ['agent', 'read', 'search', 'vscode', 'al_build', 'al_getdiagnostics']
 ---
 
 # Quick Implementation
@@ -34,10 +34,10 @@ Before anything else, evaluate the request:
 2. **Read the target file**
 3. **Read the al-coding-style skill** for naming/style rules
 4. **Make the edit directly** using the Edit tool
-5. **Build and fix until clean** — run the default VS Code build task (AL: Package).
-   - If errors: attempt to fix directly (minimal diffs, up to 3 attempts per error). After each fix, rebuild.
-   - Loop build → fix → rebuild until the build reports 0 errors, OR an error fails to resolve after 3 attempts, OR fixes introduce new errors you cannot resolve.
-   - If the loop cannot reach 0 errors, escalate to the Substantive Path (which dispatches build-error-resolver with max 3 build-fix cycles) — do not declare done with a failing build.
+5. **Build and fix until clean** — call `al_build({scope:"current"})` then `al_getdiagnostics({scope:"current", severities:["error"]})`.
+   - If the error list is non-empty: attempt to fix directly (minimal diffs, up to 3 attempts per error). After each fix, re-run `al_build` and re-query `al_getdiagnostics`.
+   - Loop until `al_getdiagnostics` returns an empty error list, OR the same `code` at the same `file`/`line` fails to resolve after 3 attempts, OR fixes introduce new errors you cannot resolve.
+   - If the loop cannot reach zero errors, escalate to the Substantive Path (which dispatches build-error-resolver with max 3 build-fix cycles) — do not declare done with a failing build.
 6. **Report:** file modified, build status (must be PASS), what changed
 
 No coder agent, no reviewers. Done.
@@ -71,8 +71,8 @@ No coder agent, no reviewers. Done.
 
 4. **Build (MANDATORY after code changes):**
    - Building is mandatory after any coder subagent edits — do not skip to review without a clean build.
-   - Run the default VS Code build task (AL: Package) to compile
-   - If errors: run a subagent using the **build-error-resolver** agent with Sonnet
+   - Call `al_build({scope:"current"})` to compile, then `al_getdiagnostics({severities:["error"]})` to retrieve the structured error list.
+   - If the error list is non-empty OR `al_build` returned `success:false`: run a subagent using the **build-error-resolver** agent with Sonnet
    - Max 3 build-fix cycles
 
 5. **Spec Review (MANDATORY gate before step 6):**
@@ -93,7 +93,7 @@ No coder agent, no reviewers. Done.
 
 7. **Apply review fixes and verify (if any findings):**
    - Dispatch a coder subagent to apply the fixes (include `[DISPATCH_CONTEXT: orchestrated]` in the coder's prompt — this skill handles the rebuild below).
-   - Rebuild (AL: Package) — if errors, dispatch build-error-resolver (max 3 build-fix cycles) until clean.
+   - Rebuild via `al_build({scope:"current"})` then `al_getdiagnostics({severities:["error"]})` — if errors remain, dispatch build-error-resolver (max 3 build-fix cycles) until clean.
    - Re-run code-reviewer and performance-reviewer in parallel **ONCE** to verify the fixes landed correctly.
      - If both APPROVE → proceed to step 8.
      - If new BLOCK or FIX FIRST findings → STOP and escalate to the user with the outstanding findings. Do not loop reviewers again (prevents infinite review cycles).

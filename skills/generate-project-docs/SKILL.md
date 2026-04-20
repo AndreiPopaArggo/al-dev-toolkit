@@ -3,7 +3,7 @@ name: generate-project-docs
 description: Generate comprehensive project-level documentation using parallel subagents. Use when asked to document a BC project. Covers data model, business logic, UI, integrations, and base app context.
 argument-hint: "[optional: scope or output preferences]"
 disable-model-invocation: true
-tools: ['agent', 'read', 'search', 'vscode']
+tools: ['agent', 'read', 'search', 'vscode', 'al_symbolsearch']
 ---
 
 # Generate Project Documentation
@@ -44,26 +44,25 @@ Run **1 subagent using the project-documenter agent with Opus**. Give it this ta
 >
 > 1. Read `app.json` — extract: app name, publisher, ID ranges, version, dependencies
 > 2. Read project config — `app.json` (BC version from `platform`/`application`), `.github/copilot-instructions.md` (conventions, special notes). If BC version is not documented, note "BC_VERSION: UNKNOWN" in the manifest.
-> 3. Glob all `.al` files in the project `src/` folder
-> 4. For each `.al` file, extract (using search, not full reads):
->    - Object type and name (from `table`, `page`, `codeunit`, `tableextension`, `pageextension`, `enumextension`, `enum`, `report`, `xmlport`, `query`, `interface`, `permissionset` declarations)
->    - For extensions: the `extends` target name
->    - For event subscribers: the `[EventSubscriber(...)]` attribute — extract object type, object name, event name
->    - For HttpClient/HttpRequestMessage: file paths where these types appear
->    - For API pages: files with `PageType = API`
->    - For XMLports: file paths
->    - For references to Warehouse tables (`"Warehouse Shipment"`, `"Warehouse Receipt"`, `"Whse."`, `"Bin"`, `"Zone"`): file paths
->    - For references to Contact/CRM tables (`Contact`, `Opportunity`, `"Interaction Log"`, `Segment`): file paths
-> 5. Group files by feature folder (first subfolder under `src/`)
+> 3. **Enumerate AL objects via `al_symbolsearch`.** Issue one call per object kind relevant to BC documentation, using a broad query (e.g. `query: "*"` or empty) scoped to the current project (exclude dependencies). Target kinds: `Table`, `TableExtension`, `Page`, `PageExtension`, `Codeunit`, `Report`, `XmlPort`, `Query`, `Enum`, `EnumExtension`, `Interface`, `PermissionSet`. For each symbol record: object type, name, ID, file path, and `extends` target (for extensions). This replaces glob+regex parsing for the core inventory.
+> 4. **Pattern-based signals (not expressible as symbol kinds)** — use Grep on the files surfaced in step 3:
+>    - Event subscribers: grep for `[EventSubscriber(` and extract object type, object name, event name from the attribute
+>    - HttpClient/HttpRequestMessage: grep for these type names — record file paths only
+>    - API pages: filter step 3's `Page` results where a grep on the file finds `PageType = API`
+>    - Warehouse refs: grep for `"Warehouse Shipment"`, `"Warehouse Receipt"`, `"Whse."`, `"Bin"`, `"Zone"` — record file paths
+>    - CRM refs: grep for `Contact`, `Opportunity`, `"Interaction Log"`, `Segment` — record file paths
+> 5. Group files by feature folder (first subfolder under `src/`, derived from the file paths returned by `al_symbolsearch`)
 > 6. Return the manifest as a structured markdown document with these sections:
 >    - `## Project Info` (app name, publisher, version, ID ranges, BC version)
 >    - `## Dependencies` (from app.json)
 >    - `## Folder Structure` (tree of src/ subfolders with file counts)
->    - `## Object Inventory` (table: object type → count)
+>    - `## Object Inventory` (table: object type → count, built from `al_symbolsearch` results)
 >    - `## File List by Folder` (grouped list: folder → files with object type and name)
->    - `## Extension Targets` (list: extension object → base object it extends)
+>    - `## Extension Targets` (list: extension object → base object it extends, from the `extends` field of `al_symbolsearch` results)
 >    - `## Event Subscribers` (list: subscriber codeunit → target object → event name)
 >    - `## Integration Signals` (HttpClient files, API pages, XMLports, Warehouse refs, CRM refs)
+>
+> Fallback: if `al_symbolsearch` is unavailable or returns zero results (project not loaded in the AL language server), fall back to glob on `src/**/*.al` and regex-extract object declarations.
 >
 > Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of web search for any Microsoft documentation lookups. Use `web/fetch` for URL fetching.
 

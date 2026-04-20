@@ -2,7 +2,7 @@
 name: build-fix
 description: "Fix AL compiler errors one at a time. Use when an AL build (AL: Package task or alc.exe) fails with compiler errors, CodeCop warnings (AA0xxx), or AppSource warnings (AS0xxx). Fixes one error, rebuilds, repeats. Do NOT use for runtime errors or business logic bugs."
 argument-hint: "[optional: scope or instructions]"
-tools: ['agent', 'read', 'search', 'vscode']
+tools: ['agent', 'read', 'search', 'vscode', 'al_build', 'al_getdiagnostics']
 ---
 
 # Build Fix Skill
@@ -11,20 +11,18 @@ Incrementally fix BC AL compiler errors.
 
 ## Workflow
 
-1. **Run AL compiler** by running the default VS Code build task (AL: Package). Check the terminal output for errors.
+1. **Run AL compiler** with `al_build({scope:"current"})`. Then call `al_getdiagnostics({scope:"current", severities:["error","warning"], limit:100})` to retrieve the typed diagnostic list.
 
-2. **Parse error output:**
-   - Group by file
-   - Sort by severity (Error > Warning)
-   - Identify error codes (AL0xxx, AA0xxx, AS0xxx)
-   - Error format: `FilePath(Line,Column): error AL0123: Message`
+2. **Read diagnostics:** the response is already grouped by file with structured fields — no terminal parsing required.
+   - Each item: `file`, `line`, `column`, `severity`, `code` (e.g. `AL0118`, `AA0021`, `AS0011`), `message`
+   - Sort locally by severity (Error before Warning) and priority order below
 
 3. **Loop: fix and rebuild until clean.** For each error in priority order:
    - Read the file and show error with surrounding context
    - Explain the issue
    - Apply the fix (smallest possible change)
-   - Re-run build (AL: Package)
-   - Verify error resolved
+   - Re-run `al_build({scope:"current"})` then `al_getdiagnostics({severities:["error"]})`
+   - Verify error resolved (item with same `code` at same `file`/`line` no longer present)
 
    Continue the loop (re-parse new build output if errors remain) until one of these terminal conditions:
    - Build reports 0 errors — SUCCESS, go to step 5
