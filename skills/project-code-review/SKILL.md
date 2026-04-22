@@ -3,7 +3,7 @@ name: project-code-review
 description: Comprehensive AL project code review using parallel subagents. Reviews all AL files for coding conventions, performance, security, and CodeCop compliance. No code changes are made.
 argument-hint: "folder or scope, e.g. src/ or src/Sales"
 disable-model-invocation: true
-tools: ['agent', 'read', 'search', 'vscode', 'al_getdiagnostics']
+tools: [agent, read, search, vscode, ms-dynamics-smb.al/al_get_diagnostics]
 ---
 
 # Project Review
@@ -14,7 +14,7 @@ Review all AL files in the project using parallel subagents. This is a **read-on
 
 1. **Discover** — Glob all `.al` files in the target scope (default: `src/`). If `$ARGUMENTS` specifies a folder or scope, use that instead.
 2. **Read project rules** — The code-reviewer and performance-reviewer agents have review rules in their Required Reading sections.
-3. **Compiler diagnostic pre-pass** — Call `al_getdiagnostics({scope:"all", severities:["error","warning"], includeRelatedInformation:true, limit:200})` once. Build a file-keyed map: `{ "<absolute path>": [diagnostics...] }`. Files not in the map have zero compiler findings. This is the authoritative CodeCop / AppSourceCop / compiler list for the whole project — the reviewers do not need to re-derive anything already on it.
+3. **Compiler diagnostic pre-pass** — Call `al_get_diagnostics({scope:"all", severities:["error","warning"], includeRelatedInformation:true, limit:200})` once. Build a file-keyed map: `{ "<absolute path>": [diagnostics...] }`. Files not in the map have zero compiler findings. This is the authoritative CodeCop / AppSourceCop / compiler list for the whole project — the reviewers do not need to re-derive anything already on it.
 4. **Group files** — Split files by feature folder (first subfolder under `src/`). If no subfolders, split into groups of ~10 files.
 5. **Parallel subagent review** — For each file group, run **TWO parallel subagents** (all with Sonnet):
 

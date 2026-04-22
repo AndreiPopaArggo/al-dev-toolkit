@@ -204,7 +204,7 @@ _RecordNotFoundErr: Label 'Table %1 does not contain %2 = %3.',
 
 ## Build After Editing
 
-Every `.al` edit must be followed by a build before the turn ends: call `al_build({scope:"current"})` then `al_getdiagnostics({scope:"current", severities:["error","warning"]})` to retrieve the typed diagnostic list. Drive **both errors and warnings** on the files you touched to zero — CodeCop (AA0xxx), AppSource (AS0xxx), and compiler warnings count as must-fix unless the user has explicitly accepted one. Do not declare a change done with an unbuilt or warning-laden file.
+Every `.al` edit must be followed by a build before the turn ends: call `al_build({scope:"current"})` then `al_get_diagnostics({scope:"current", severities:["error","warning"]})` to retrieve the typed diagnostic list. Drive **both errors and warnings** on the files you touched to zero — CodeCop (AA0xxx), AppSource (AS0xxx), and compiler warnings count as must-fix unless the user has explicitly accepted one. Do not declare a change done with an unbuilt or warning-laden file.
 
 **Exception:** when you are dispatched as a coder subagent with `[DISPATCH_CONTEXT: orchestrated]` in your prompt, the orchestrator runs the build after you return — do NOT build yourself.
 

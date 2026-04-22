@@ -47,7 +47,6 @@ Add to your VS Code `settings.json`:
 | `/project-code-review` | Review all AL files in a folder/project |
 | `/bc-research` | Research BC base application objects and events |
 | `/generate-project-docs` | Generate comprehensive project documentation |
-| `/md-to-pdf` | Convert Markdown to PDF with Mermaid support |
 
 ### Skills (16)
 
@@ -61,7 +60,7 @@ Skills are loaded automatically by agents or invoked by commands.
 
 **Research:** bc-research
 
-**Docs:** generate-project-docs, md-to-pdf
+**Docs:** generate-project-docs
 
 **Configuration:** project-setup
 

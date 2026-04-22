@@ -16,8 +16,11 @@ try {
     $event = $inputData | ConvertFrom-Json -ErrorAction Stop
     $toolName = if ($event.tool_name) { [string]$event.tool_name } else { '' }
 
-    # Claude Code: mcp__al-mcp-server__*  VS Code: mcp_al_mcp_server_*
-    if ($toolName -notmatch '^mcp_{1,2}al[-_]mcp[-_]server_{1,2}') {
+    # Matches al-mcp-server tools across harness formats:
+    #   Claude Code: mcp__al-mcp-server__<tool>
+    #   VS Code:     al-mcp-server/<tool>
+    #   Legacy:      mcp_al_mcp_server_<tool>
+    if ($toolName -notmatch '^(mcp_{1,2})?al[-_]mcp[-_]server[/_]') {
         exit 0
     }
 

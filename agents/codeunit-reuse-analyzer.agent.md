@@ -1,9 +1,8 @@
 ---
 name: codeunit-reuse-analyzer
 description: OnPrem codeunit reuse reviewer. Given a plan and the current project, identifies new codeunits in the plan that could be merged into existing project codeunits instead of minted new. Respects LS Retail Panel/Command, handler codeunit, and dedicated event-subscriber exceptions.
-model: sonnet
-maxTurns: 10
-tools: ['read', 'search', 'vscode']
+model: Claude Sonnet 4.6 (copilot)
+tools: [read, search, vscode, ms-dynamics-smb.al/al_symbolsearch]
 ---
 
 # OnPrem Codeunit Reuse Analyzer

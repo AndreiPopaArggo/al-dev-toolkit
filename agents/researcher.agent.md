@@ -1,9 +1,8 @@
 ---
 name: researcher
 description: BC base application research specialist. Investigates base app objects, events, table structures, and procedures. Read-only — never modifies project files.
-model: sonnet
-maxTurns: 20
-tools: ['read', 'search', 'execute', 'vscode', 'al-mcp-server/*', 'microsoft-learn/*']
+model: Claude Sonnet 4.6 (copilot)
+tools: [read, search, vscode, web, todo, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_symbolsearch]
 ---
 
 # BC Base App Researcher

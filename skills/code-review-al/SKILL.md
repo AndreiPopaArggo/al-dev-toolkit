@@ -3,7 +3,7 @@ name: code-review-al
 description: Review only changed AL files using parallel code-reviewer and performance-reviewer subagents. No code changes are made.
 argument-hint: "optional: staged, unstaged, or branch name to diff against"
 disable-model-invocation: true
-tools: ['agent', 'read', 'search', 'vscode', 'al_getdiagnostics']
+tools: [agent, read, search, vscode, ms-dynamics-smb.al/al_get_diagnostics]
 ---
 
 # Code Review (Changed Files Only)
@@ -20,7 +20,7 @@ Review only the AL files that have been modified, using parallel **code-reviewer
    - Filter to only `.al` files
 2. **If no changed AL files** — Report "No AL changes to review" and stop.
 3. **Get diffs** — Run `git diff` for the changed AL files to see the actual modifications.
-4. **Compiler diagnostic pre-pass** — Call `al_getdiagnostics({scope:"current", severities:["error","warning"], includeRelatedInformation:true, limit:200})`. Filter the result to items whose `file` path is in the changed-file list from step 1. This is the authoritative CodeCop / AppSourceCop / compiler finding list for the scope being reviewed — splitting it by file, you'll pass each subagent its per-file subset so they don't re-derive it from source.
+4. **Compiler diagnostic pre-pass** — Call `al_get_diagnostics({scope:"current", severities:["error","warning"], includeRelatedInformation:true, limit:200})`. Filter the result to items whose `file` path is in the changed-file list from step 1. This is the authoritative CodeCop / AppSourceCop / compiler finding list for the scope being reviewed — splitting it by file, you'll pass each subagent its per-file subset so they don't re-derive it from source.
 5. **Parallel subagent review** — Run **TWO parallel subagents** (both with Sonnet):
 
    | Subagent | Focus |

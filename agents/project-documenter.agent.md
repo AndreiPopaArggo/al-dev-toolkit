@@ -1,9 +1,8 @@
 ---
 name: project-documenter
 description: BC AL project documentation specialist. Analyzes AL codebases and produces structured documentation reports. Used by /generate-project-docs skill for deep parallel analysis of data models, business logic, UI, integrations, and base app context.
-model: sonnet
-maxTurns: 25
-tools: ['read', 'search', 'edit', 'execute', 'vscode', 'web/fetch', 'al-mcp-server/*', 'microsoft-learn/*']
+model: Claude Opus 4.6 (copilot)
+tools: [read, edit, search, vscode, web, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_symbolsearch, vscode.mermaid-chat-features/renderMermaidDiagram]
 ---
 
 # BC AL Project Documenter

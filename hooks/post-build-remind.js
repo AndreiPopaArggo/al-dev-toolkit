@@ -23,8 +23,9 @@ function emit() {
 }
 
 function isAlBuildTool(toolName) {
-  // Matches VS Code LM Tool name "al_build" or any MCP-prefixed variant (e.g. mcp__al-mcp-server__al_build).
-  return /(^|__)al_build$/.test(toolName);
+  // Matches bare "al_build", MCP-prefixed "mcp__al-mcp-server__al_build",
+  // and VS Code extension-prefixed "ms-dynamics-smb.al/al_build".
+  return /(^|__|\/)al_build$/.test(toolName);
 }
 
 function structuredBuildSucceeded(response) {

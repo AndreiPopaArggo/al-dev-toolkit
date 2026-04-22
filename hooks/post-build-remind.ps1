@@ -28,7 +28,9 @@ function Emit-Reminder {
 
 function Test-AlBuildTool {
     param([string]$ToolName)
-    return $ToolName -match '(^|__)al_build$'
+    # Matches bare "al_build", MCP-prefixed "mcp__al-mcp-server__al_build",
+    # and VS Code extension-prefixed "ms-dynamics-smb.al/al_build".
+    return $ToolName -match '(^|__|/)al_build$'
 }
 
 function Test-StructuredBuildSucceeded {
