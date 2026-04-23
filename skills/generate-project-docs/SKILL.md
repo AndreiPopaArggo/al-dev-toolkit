@@ -2,8 +2,9 @@
 name: generate-project-docs
 description: Generate comprehensive project-level documentation using parallel subagents. Use when asked to document a BC project. Covers data model, business logic, UI, integrations, and base app context.
 argument-hint: "[optional: scope or output preferences]"
-disable-model-invocation: true
-tools: [agent, read, search, vscode, ms-dynamics-smb.al/al_symbolsearch]
+user-invocable: false
+disable-model-invocation: false
+tools: [agent, read, search, vscode, web, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_symbolsearch]
 ---
 
 # Generate Project Documentation
@@ -44,7 +45,7 @@ Run **1 subagent using the project-documenter agent with Opus**. Give it this ta
 >
 > 1. Read `app.json` — extract: app name, publisher, ID ranges, version, dependencies
 > 2. Read project config — `app.json` (BC version from `platform`/`application`), `.github/copilot-instructions.md` (conventions, special notes). If BC version is not documented, note "BC_VERSION: UNKNOWN" in the manifest.
-> 3. **Enumerate AL objects via `al_symbolsearch`.** Issue one call per object kind relevant to BC documentation, using a broad query (e.g. `query: "*"` or empty) scoped to the current project (exclude dependencies). Target kinds: `Table`, `TableExtension`, `Page`, `PageExtension`, `Codeunit`, `Report`, `XmlPort`, `Query`, `Enum`, `EnumExtension`, `Interface`, `PermissionSet`. For each symbol record: object type, name, ID, file path, and `extends` target (for extensions). This replaces glob+regex parsing for the core inventory.
+> 3. **Enumerate AL objects via #ms-dynamics-smb.al/al_symbolsearch.** Issue one call per object kind relevant to BC documentation, using a broad query (e.g. `query: "*"` or empty) scoped to the current project (exclude dependencies). Target kinds: `Table`, `TableExtension`, `Page`, `PageExtension`, `Codeunit`, `Report`, `XmlPort`, `Query`, `Enum`, `EnumExtension`, `Interface`, `PermissionSet`. For each symbol record: object type, name, ID, file path, and `extends` target (for extensions). This replaces glob+regex parsing for the core inventory.
 > 4. **Pattern-based signals (not expressible as symbol kinds)** — use Grep on the files surfaced in step 3:
 >    - Event subscribers: grep for `[EventSubscriber(` and extract object type, object name, event name from the attribute
 >    - HttpClient/HttpRequestMessage: grep for these type names — record file paths only
@@ -64,7 +65,7 @@ Run **1 subagent using the project-documenter agent with Opus**. Give it this ta
 >
 > Fallback: if `al_symbolsearch` is unavailable or returns zero results (project not loaded in the AL language server), fall back to glob on `src/**/*.al` and regex-extract object declarations.
 >
-> Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of web search for any Microsoft documentation lookups. Use `web/fetch` for URL fetching.
+> Use #microsoft-learn/microsoft_docs_search and #microsoft-learn/microsoft_docs_fetch instead of web search for any Microsoft documentation lookups. Use #web/fetch for URL fetching.
 
 Wait for this subagent to complete. Parse its manifest to determine which Phase 2.5 and 2.6 subagents are needed.
 
@@ -84,7 +85,7 @@ Each subagent prompt must include the **Common Preamble** prepended, then the su
 >
 > You have full read access to all project files. Look things up yourself first. If you encounter cross-scope references you cannot resolve, add them to a `## Needs Context` section at the end of your report.
 >
-> Use `mcp__microsoft-learn__microsoft_docs_search` and `mcp__microsoft-learn__microsoft_docs_fetch` instead of web search for any Microsoft documentation lookups. Use `web/fetch` for URL fetching.
+> Use #microsoft-learn/microsoft_docs_search and #microsoft-learn/microsoft_docs_fetch instead of web search for any Microsoft documentation lookups. Use #web/fetch for URL fetching.
 
 ### Phase 2: Project Analysis (always 5 subagents)
 
@@ -214,7 +215,7 @@ Each subagent prompt must include the **Common Preamble** prepended, then the su
 
 Run if Extension Targets contains table extensions.
 
-> You are researching BASE APPLICATION TABLES that this project extends. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
+> You are researching BASE APPLICATION TABLES that this project extends. Use AL MCP server tools for all base app lookups. Use #al-mcp-server/al_get_source for actual implementation code.
 >
 > For each table extension in the manifest, look up the base table. Extract:
 > - Table purpose in standard BC
@@ -229,7 +230,7 @@ Run if Extension Targets contains table extensions.
 
 Run if Extension Targets contains page extensions.
 
-> You are researching BASE APPLICATION PAGES that this project extends. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
+> You are researching BASE APPLICATION PAGES that this project extends. Use AL MCP server tools for all base app lookups. Use #al-mcp-server/al_get_source for actual implementation code.
 >
 > For each page extension in the manifest, look up the base page. Extract:
 > - Page purpose: what business process it serves
@@ -243,7 +244,7 @@ Run if Extension Targets contains page extensions.
 
 Run if Event Subscribers list is non-empty.
 
-> You are researching BASE APPLICATION EVENTS that this project subscribes to. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
+> You are researching BASE APPLICATION EVENTS that this project subscribes to. Use AL MCP server tools for all base app lookups. Use #al-mcp-server/al_get_source for actual implementation code.
 >
 > For each event subscriber in the manifest, find the publisher procedure in the base app source. Extract:
 > - Which codeunit/table publishes the event
@@ -259,7 +260,7 @@ Run if Event Subscribers list is non-empty.
 
 Run if manifest shows references to standard codeunits like "Sales-Post", "Gen. Jnl.-Post Line", etc.
 
-> You are researching BASE APPLICATION CODEUNITS that this project references or interacts with. Use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` for actual implementation code.
+> You are researching BASE APPLICATION CODEUNITS that this project references or interacts with. Use AL MCP server tools for all base app lookups. Use #al-mcp-server/al_get_source for actual implementation code.
 >
 > For each referenced standard codeunit, find and read the source. Extract:
 > - Codeunit purpose: what business process it handles

@@ -109,7 +109,14 @@ Schema and writer discipline are documented in [`skills/al-planning/plan-schema.
 
 ## Project Configuration
 
-Each BC project should have a `.github/copilot-instructions.md` or `CLAUDE.md` in the project root with:
+After installing the plugin, run `/setup` **once per BC project**. It reads `app.json` / `CodeCop.json`, asks for the deployment target, and writes:
+
+- `.github/copilot-instructions.md` — project config + plugin routing, loaded on every session
+- `.github/instructions/al-workflow.instructions.md` — routing guard + skill enforcement, auto-applied when AL files are in context
+
+The agent picks both files up automatically on the next session.
+
+If you want to configure manually instead, create `.github/copilot-instructions.md` with at least:
 
 ```markdown
 ## Project Info

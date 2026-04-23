@@ -2,7 +2,7 @@
 name: al-planning
 description: "Plan a BC feature before implementing it. Use when the user asks for a new feature, multi-object change, or significant AL implementation that needs design — involves 3+ files, new tables/pages/codeunits, event subscriptions, or architectural decisions. Produces a plan file, does NOT write code. Do NOT use for simple 1-2 file changes (use quick) or vague ideas (use brainstorming)."
 argument-hint: "<description of what to build>"
-tools: [agent, read, search, vscode]
+tools: [agent, read, search, vscode, 'microsoft-learn/*']
 ---
 
 # AL Planning
@@ -70,7 +70,7 @@ Run **parallel subagents using the researcher agent** (with Sonnet) to investiga
 - Project root path
 - The specific research task and focus areas
 
-**Fill gaps before designing.** If research has holes, run targeted follow-up researcher subagents. Use `mcp__microsoft-learn__microsoft_docs_search` / `mcp__microsoft-learn__microsoft_docs_fetch` for quick documentation lookups.
+**Fill gaps before designing.** If research has holes, run targeted follow-up researcher subagents. Use #microsoft-learn/microsoft_docs_search / #microsoft-learn/microsoft_docs_fetch for quick documentation lookups.
 
 ## Design
 

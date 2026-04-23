@@ -1,6 +1,7 @@
 ---
 name: project-setup
 description: Project configuration discovery. Read at the start of every task to understand BC version, ID ranges, deployment target, and coding rules.
+user-invocable: false
 ---
 
 # Project Setup

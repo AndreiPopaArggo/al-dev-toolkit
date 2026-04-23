@@ -1,7 +1,7 @@
 ---
 name: coder
 description: BC AL implementation specialist. Writes AL code from a plan or applies targeted changes to existing code. Reads project rules at startup for consistent style.
-model: Claude Sonnet 4.6 (copilot)
+model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.3 (copilot)']
 tools: [read, edit, execute, search, vscode, todo, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_build, ms-dynamics-smb.al/al_get_diagnostics, ms-dynamics-smb.al/al_symbolsearch]
 ---
 
@@ -140,4 +140,4 @@ Before returning control, ensure the build is clean or explicitly reported as fa
 
 **3. Standalone build-and-fix (required whenever you are not explicitly orchestrated):**
 
-Call `al_build({scope:"current"})` to compile, then `al_get_diagnostics({scope:"current", severities:["error","warning"]})` to retrieve the typed diagnostic list. Fix **both errors AND warnings** on the files you touched — CodeCop (AA0xxx), AppSource (AS0xxx), and compiler warnings count as must-fix unless the user has explicitly accepted one. Use minimal diffs, max 3 attempts per issue. Loop `al_build` → fix → `al_build` + `al_get_diagnostics` until the error list is empty and no new warnings remain on your edited files. If outstanding errors or warnings remain, report each one (file, line, code, message) and what was tried — do not return silently with a failing or warning-laden build.
+Call #ms-dynamics-smb.al/al_build({scope:"current"}) to compile, then #ms-dynamics-smb.al/al_get_diagnostics({scope:"current", severities:["error","warning"]}) to retrieve the typed diagnostic list. Fix **both errors AND warnings** on the files you touched — CodeCop (AA0xxx), AppSource (AS0xxx), and compiler warnings count as must-fix unless the user has explicitly accepted one. Use minimal diffs, max 3 attempts per issue. Loop #ms-dynamics-smb.al/al_build → fix → #ms-dynamics-smb.al/al_build + #ms-dynamics-smb.al/al_get_diagnostics until the error list is empty and no new warnings remain on your edited files. If outstanding errors or warnings remain, report each one (file, line, code, message) and what was tried — do not return silently with a failing or warning-laden build.

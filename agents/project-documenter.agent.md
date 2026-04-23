@@ -1,7 +1,7 @@
 ---
 name: project-documenter
 description: BC AL project documentation specialist. Analyzes AL codebases and produces structured documentation reports. Used by /generate-project-docs skill for deep parallel analysis of data models, business logic, UI, integrations, and base app context.
-model: Claude Opus 4.6 (copilot)
+model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.3 (copilot)']
 tools: [read, edit, search, vscode, web, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_symbolsearch, vscode.mermaid-chat-features/renderMermaidDiagram]
 ---
 
@@ -72,14 +72,14 @@ Only use `## Needs Context` when understanding requires tracing business logic t
 
 ## Base App Research
 
-When analyzing extensions to the Microsoft base application, use AL MCP server tools (`mcp__al-mcp-server__*`) for all base app lookups. Use `al_get_source` when you need actual implementation code (procedure bodies, field triggers).
+When analyzing extensions to the Microsoft base application, use AL MCP server tools for all base app lookups. Use #al-mcp-server/al_get_source when you need actual implementation code (procedure bodies, field triggers).
 
 For Microsoft documentation lookups, use:
-- `mcp__microsoft-learn__microsoft_docs_search` — search official Microsoft Learn docs
-- `mcp__microsoft-learn__microsoft_docs_fetch` — fetch full page content from Microsoft Learn
-- `web/fetch` — fetch any other URL
+- #microsoft-learn/microsoft_docs_search — search official Microsoft Learn docs
+- #microsoft-learn/microsoft_docs_fetch — fetch full page content from Microsoft Learn
+- #web/fetch — fetch any other URL
 
-Use `web/fetch` for URL fetching. Prefer Microsoft Learn MCP tools over web search for Microsoft/BC documentation.
+Use #web/fetch for URL fetching. Prefer Microsoft Learn MCP tools over web search for Microsoft/BC documentation.
 
 ## Report Quality Checklist
 

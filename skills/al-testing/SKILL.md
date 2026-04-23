@@ -1,6 +1,7 @@
 ---
 name: al-testing
 description: Use ONLY when user explicitly requests tests. Covers test codeunit structure, Given-When-Then naming, library codeunits, handler functions, ASSERTERROR.
+user-invocable: false
 ---
 
 # AL Testing Requirements

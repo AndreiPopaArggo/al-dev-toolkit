@@ -1,6 +1,7 @@
 ---
 name: al-patterns
 description: Use when writing new AL objects or designing extensibility. Covers events, interfaces, temp tables, TryFunction, setup tables, notifications, enums, handler codeunits, CommitBehavior, GuiAllowed, dedup guards.
+user-invocable: false
 ---
 
 # AL Design Patterns

@@ -1,6 +1,7 @@
 ---
 name: al-performance
 description: Use when writing or reviewing AL code that reads from the database. Covers SetLoadFields, FindSet vs Get, set-based ops, FlowField handling, caching, query objects, unnecessary Validate.
+user-invocable: false
 ---
 
 # AL Performance Guidelines

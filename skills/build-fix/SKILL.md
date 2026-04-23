@@ -11,7 +11,7 @@ Incrementally fix BC AL compiler errors.
 
 ## Workflow
 
-1. **Run AL compiler** with `al_build({scope:"current"})`. Then call `al_get_diagnostics({scope:"current", severities:["error","warning"], limit:100})` to retrieve the typed diagnostic list.
+1. **Run AL compiler** with #ms-dynamics-smb.al/al_build({scope:"current"}). Then call #ms-dynamics-smb.al/al_get_diagnostics({scope:"current", severities:["error","warning"], limit:100}) to retrieve the typed diagnostic list.
 
 2. **Read diagnostics:** the response is already grouped by file with structured fields — no terminal parsing required.
    - Each item: `file`, `line`, `column`, `severity`, `code` (e.g. `AL0118`, `AA0021`, `AS0011`), `message`
@@ -21,7 +21,7 @@ Incrementally fix BC AL compiler errors.
    - Read the file and show error with surrounding context
    - Explain the issue
    - Apply the fix (smallest possible change)
-   - Re-run `al_build({scope:"current"})` then `al_get_diagnostics({severities:["error"]})`
+   - Re-run #ms-dynamics-smb.al/al_build({scope:"current"}) then #ms-dynamics-smb.al/al_get_diagnostics({severities:["error"]})
    - Verify error resolved (item with same `code` at same `file`/`line` no longer present)
 
    Continue the loop (re-parse new build output if errors remain) until one of these terminal conditions:

@@ -1,6 +1,7 @@
 ---
 name: al-security
 description: Use when creating tables, handling credentials, or setting up permissions. Covers permission sets, DataClassification (GDPR), credential handling with SecretText, indirect permissions.
+user-invocable: false
 ---
 
 # AL Security Guidelines
