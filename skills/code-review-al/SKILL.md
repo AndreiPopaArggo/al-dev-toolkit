@@ -3,7 +3,6 @@ name: code-review-al
 description: Review only changed AL files using parallel code-reviewer and performance-reviewer subagents. No code changes are made.
 argument-hint: "optional: staged, unstaged, or branch name to diff against"
 disable-model-invocation: true
-tools: [agent, read, search, vscode, ms-dynamics-smb.al/al_get_diagnostics]
 ---
 
 # Code Review (Changed Files Only)

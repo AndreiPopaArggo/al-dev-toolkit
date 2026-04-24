@@ -2,7 +2,6 @@
 name: build-fix
 description: "Fix AL compiler errors one at a time. Use when an AL build (AL: Package task or alc.exe) fails with compiler errors, CodeCop warnings (AA0xxx), or AppSource warnings (AS0xxx). Fixes one error, rebuilds, repeats. Do NOT use for runtime errors or business logic bugs."
 argument-hint: "[optional: scope or instructions]"
-tools: [agent, read, search, vscode, ms-dynamics-smb.al/al_build, ms-dynamics-smb.al/al_get_diagnostics]
 ---
 
 # Build Fix Skill

@@ -4,7 +4,6 @@ description: Comprehensive AL project code review using parallel subagents. Revi
 argument-hint: "folder or scope, e.g. src/ or src/Sales"
 user-invocable: false
 disable-model-invocation: false
-tools: [agent, read, search, vscode, ms-dynamics-smb.al/al_get_diagnostics]
 ---
 
 # Project Review

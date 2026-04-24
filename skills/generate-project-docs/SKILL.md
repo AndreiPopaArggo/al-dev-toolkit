@@ -4,7 +4,6 @@ description: Generate comprehensive project-level documentation using parallel s
 argument-hint: "[optional: scope or output preferences]"
 user-invocable: false
 disable-model-invocation: false
-tools: [agent, read, search, vscode, web, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_symbolsearch]
 ---
 
 # Generate Project Documentation

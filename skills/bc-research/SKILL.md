@@ -3,7 +3,6 @@ name: bc-research
 description: Research BC base application. Use when anyone asks about standard BC tables, events, procedures, page layouts, or patterns — anything in the Microsoft Business Central base application or system application. Spawns a researcher subagent to call MCP tools.
 argument-hint: "<research goal>"
 user-invocable: false
-tools: [agent, read, search, vscode]
 ---
 
 # BC Base Application Research

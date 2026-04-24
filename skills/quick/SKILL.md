@@ -2,7 +2,6 @@
 name: quick
 description: "Quick implementation for simple 1-2 file changes. Use when the user asks for a small, well-understood AL code change that touches at most 2 files — rename a caption, add a field, fix a property, add a column to a page. Do NOT use for multi-object features, unclear requirements, or anything needing research."
 argument-hint: "<description of change>"
-tools: [agent, read, search, vscode, ms-dynamics-smb.al/al_build, ms-dynamics-smb.al/al_get_diagnostics]
 ---
 
 # Quick Implementation
