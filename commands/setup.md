@@ -121,4 +121,8 @@ When editing AL through any of the commands above, the agent must load and apply
 - `al-security` — DataClassification, permission sets, credential handling
 
 The `coder` agent preloads these automatically. Any other agent editing AL must load them explicitly before writing code.
+
+## Base-app references
+
+When reading Microsoft base-app code via `al-mcp-server` or `microsoft-learn` MCPs, use it for signatures, behavior, and patterns only. Do **not** copy variable names verbatim — Microsoft base app uses different conventions (no `_` on locals, no `p` on parameters, etc.). The project conventions in `al-coding-style` apply to every variable you declare, regardless of what surrounding lookup results look like.
 ~~~
