@@ -94,6 +94,54 @@ This is single-hop — do NOT recurse into the referenced tasks' own references.
 
 After Q1–Q4 complete, hold the results in working memory. Do NOT print raw SQL output back to the user. Phases 2, 3, 4 will use the data.
 
+## Phase 2a — Completion gate
+
+If `force = true` (the user passed `--force`), skip this gate entirely and proceed to Phase 2b.
+
+Otherwise, decide whether the task has any unsatisfied request. **Stop signals — any one trips the gate:**
+
+- `task_percent_complete = 100` (from Q1).
+- The latest log entry (last row of Q2 by date) is a delivery / fix acknowledgment from a developer with no later requester reply asking for more. Strong markers used by this team: `@se poate testa`, `rezolvat`, `modificat pe productie`, `@instalat`, `pus pe productie`. These are signals to read for context — do not regex-match. A log that says "rezolvat partial" with a follow-up request immediately after is NOT a stop signal.
+- The latest log is a verification ask only ("rog verificare", "please verify") with no code work pending — i.e. the dev has already delivered and asked the requester to confirm.
+
+**Synthesize from context, do not pattern-match.** Read the timeline as a human reviewer would. The markers are this team's vocabulary; use them as hints, not contracts. Other teams may use different wording — the gate must still trip on equivalent meaning.
+
+**If a stop signal trips, stop with this message:**
+
+```
+Task <taskID> appears complete.
+
+Last activity (<task_log_date>): <first 200 chars of last log description, ellipsis if longer>
+
+Re-run with `/do-task <taskID> --force` if you disagree, or refine the dotProject task with the new ask.
+
+dotProject: http://sql/arggoplanner/index.php?m=tasks&a=view&task_id=<taskID>
+```
+
+If no stop signal, proceed to Phase 2b.
+
+## Phase 2b — Non-coding gate
+
+`--force` does NOT bypass this gate. `--force` is for "the agent is wrong about completion." It is not for "I want to run code generation on a non-coding task."
+
+Decide whether the latest unsatisfied request is actually a coding task. **Stop signals:**
+
+- The task is a pure estimation / scoping ask. Patterns: description starts with or is dominated by "rog estimare" / "rog evaluare" / "estimate effort" / "scope this" / "give me an estimate", and the log timeline contains only effort numbers, role assignments, or planning meta — no implementation request.
+- The task is purely operational — installing a binary, running a script, configuring a cloud resource — with no AL code to write.
+- The task is asking for a code review only ("review the X branch", "verify this works") with no new code to produce.
+
+**If a stop signal trips, stop with this message:**
+
+```
+Task <taskID> is not a coding task (<short reason: estimation/scoping/operations/review-only>).
+
+/do-task only handles development tasks. Convert the dotProject task to a concrete development request, then re-run.
+
+dotProject: http://sql/arggoplanner/index.php?m=tasks&a=view&task_id=<taskID>
+```
+
+If neither gate trips, proceed to Phase 3.
+
 ## User's Request
 
 $ARGUMENTS
