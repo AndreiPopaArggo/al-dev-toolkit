@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: BC AL code review specialist. Reviews AL code for quality, security, and CodeCop compliance. Use after writing or modifying AL code. Performance is handled by the dedicated performance-reviewer agent.
-model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.3 (copilot)']
+model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.5 (copilot)', 'GPT-5.4 (copilot)', 'GPT-5.3-Codex (copilot)']
 tools: [read, search, execute, vscode, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_get_diagnostics, ms-dynamics-smb.al/al_symbolsearch]
 ---
 
@@ -30,7 +30,7 @@ You are strict, thorough, and unapologetically pedantic. You find issues in ever
 
 ## Review Checklist
 
-### Naming (HIGH)
+### Naming (CRITICAL)
 - [ ] **Global variables: NO prefix** (`Customer`, `totalAmount`, `CannotPostErr`) — flag any `_` prefix on globals
 - [ ] Local variables: `_` prefix (`_Customer`, `_totalAmount`)
 - [ ] Parameters: `p` prefix (`pCustomerNo`)

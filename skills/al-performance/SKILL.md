@@ -174,6 +174,60 @@ begin
 end;
 ```
 
+### Setup Tables: GetRecordOnce
+
+Setup tables hold a single record that gets read repeatedly across many procedures during a transaction. Without caching, each call hits the database. Use a `_recordHasBeenRead` flag on the table — this matches the BC26 base app pattern.
+
+```al
+// BAD: every caller hits DB
+codeunit 50200 "ACME Sales Helper"
+{
+    procedure CalculateDiscount()
+    var
+        _Setup: Record "ACME Setup";
+    begin
+        _Setup.Get();           // DB hit
+        // use _Setup."Default Rating"
+    end;
+
+    procedure ApplyDefaults()
+    var
+        _Setup: Record "ACME Setup";
+    begin
+        _Setup.Get();           // DB hit, again
+        // use _Setup fields
+    end;
+}
+
+// GOOD: one DB hit per session, regardless of caller count
+table 50105 "ACME Setup"
+{
+    var
+        _recordHasBeenRead: Boolean;
+
+    procedure GetRecordOnce()
+    begin
+        if _recordHasBeenRead then
+            exit;
+        Get();
+        _recordHasBeenRead := true;
+    end;
+}
+
+codeunit 50200 "ACME Sales Helper"
+{
+    procedure CalculateDiscount()
+    var
+        _Setup: Record "ACME Setup";
+    begin
+        _Setup.GetRecordOnce();
+        // use _Setup fields
+    end;
+}
+```
+
+**When this matters most:** setup-table reads inside loops, called from multiple procedures during posting, or accessed by many subscribers in the same transaction. The cost is small per call but compounds quickly.
+
 ## Query Objects for Aggregations
 
 ```al
@@ -249,4 +303,5 @@ if _Item.FindSet() then
 - [ ] CalcSums instead of manual aggregation loops
 - [ ] ModifyAll/DeleteAll for bulk operations
 - [ ] No database reads inside tight loops
+- [ ] Setup tables read via `GetRecordOnce()` — not raw `Get()` repeated across procedures
 - [ ] No unnecessary Validate — use direct assignment when OnValidate effects aren't needed

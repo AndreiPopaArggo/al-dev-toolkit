@@ -1,7 +1,7 @@
 ---
 name: spec-reviewer
 description: Verifies that an implementation matches its specification (plan or user request). Checks existence, substance, and wiring of every planned object. Read-only — never modifies code.
-model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.3 (copilot)']
+model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.5 (copilot)', 'GPT-5.4 (copilot)', 'GPT-5.3-Codex (copilot)']
 tools: [read, search, vscode, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_symbolsearch]
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: project-documenter
 description: BC AL project documentation specialist. Analyzes AL codebases and produces structured documentation reports. Used by /generate-project-docs skill for deep parallel analysis of data models, business logic, UI, integrations, and base app context.
-model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.3 (copilot)']
+model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.5 (copilot)', 'GPT-5.4 (copilot)', 'GPT-5.3-Codex (copilot)']
 tools: [read, edit, search, vscode, web, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_symbolsearch, vscode.mermaid-chat-features/renderMermaidDiagram]
 ---
 

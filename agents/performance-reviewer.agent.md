@@ -1,7 +1,7 @@
 ---
 name: performance-reviewer
 description: BC AL performance review specialist. Reviews AL code exclusively for performance issues — SetLoadFields, N+1 queries, FlowField misuse, missing bulk operations, caching opportunities. Use after writing or modifying AL code, in parallel with code-reviewer.
-model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.3 (copilot)']
+model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.5 (copilot)', 'GPT-5.4 (copilot)', 'GPT-5.3-Codex (copilot)']
 tools: [read, search, execute, vscode, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_get_diagnostics]
 ---
 
@@ -71,7 +71,7 @@ You see every `FindSet()` without `SetLoadFields` as a production outage waiting
 ### Caching Opportunities (MEDIUM)
 - [ ] Repeated lookups to same table with same key → should use Dictionary cache
 - [ ] Multi-pass processing on same dataset → should use temp table buffer
-- [ ] Setup table reads → should use `GetRecordOnce()` pattern with caching flag
+- [ ] Setup table `Get()` repeated across procedures or inside loops → flag for `GetRecordOnce()` caching pattern (BC26 base app)
 - [ ] Repeated `CalcFields` on same record → cache the result
 
 ### Query Objects (MEDIUM)

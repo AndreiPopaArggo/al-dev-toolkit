@@ -1,7 +1,7 @@
 ---
 name: build-error-resolver
 description: BC AL compiler error resolution specialist. Use PROACTIVELY when AL build fails, CodeCop errors occur, or app.json issues arise. Fixes errors with minimal diffs, no architectural changes.
-model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.3 (copilot)']
+model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.5 (copilot)', 'GPT-5.4 (copilot)', 'GPT-5.3-Codex (copilot)']
 tools: [read, edit, execute, search, vscode, todo, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_build, ms-dynamics-smb.al/al_get_diagnostics, ms-dynamics-smb.al/al_symbolsearch, ms-dynamics-smb.al/al_downloadsymbols]
 ---
 

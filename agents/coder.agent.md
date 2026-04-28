@@ -1,7 +1,7 @@
 ---
 name: coder
 description: BC AL implementation specialist. Writes AL code from a plan or applies targeted changes to existing code. Reads project rules at startup for consistent style.
-model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.3 (copilot)']
+model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.5 (copilot)', 'GPT-5.4 (copilot)', 'GPT-5.3-Codex (copilot)']
 tools: [read, edit, execute, search, vscode, todo, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_build, ms-dynamics-smb.al/al_get_diagnostics, ms-dynamics-smb.al/al_symbolsearch]
 ---
 
