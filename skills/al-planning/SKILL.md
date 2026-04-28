@@ -83,9 +83,7 @@ Design the solution directly from research findings. Do NOT delegate design to s
 
 ## Write the Plan
 
-**Location:**
-- Task session active: `.github/plans/task-<taskID>-plan.md`
-- No session: `.github/plans/plan-<YYYYMMDD-HHMM>.md`
+**Location:** `.github/plans/plan-<YYYYMMDD-HHMM>.md`
 
 The plan must be **self-contained** — a coder with only the plan file must be able to implement.
 
@@ -186,8 +184,6 @@ When `project.deployment` is `OnPrem` or `Both` **and** the plan contains new co
 Do not apply merges silently — the user decides each one. If the user rejects all merges, leave the plan untouched.
 
 ## Handoff
-
-If a task session is active, update the session file with a `## Plan File` link and TODO items.
 
 **Write LATEST pointer:** Save the plan file path to `.github/plans/LATEST` (overwrite if exists). This allows `/implement` to find the most recent plan without manual path entry. Create the `.github/plans/` directory if it doesn't exist.
 

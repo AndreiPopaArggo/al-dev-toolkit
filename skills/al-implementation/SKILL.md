@@ -22,9 +22,8 @@ The main agent acts as a **pure orchestrator**. It runs subagents, runs builds, 
 Check for a plan in this priority order:
 
 1. **Plan path in prompt** — if the invoker passed a file path (e.g., from al-planning skill or `/implement path/to/plan.md`), read that file
-2. **Loaded task session** — read the session file, find `## Plan File` section, read the linked plan
-3. **LATEST pointer** — check `.github/plans/LATEST` for the most recent plan path. If the file exists and the referenced plan file exists, use it.
-4. **Conversation context** — use the current conversation as the plan (user discussed changes directly)
+2. **LATEST pointer** — check `.github/plans/LATEST` for the most recent plan path. If the file exists and the referenced plan file exists, use it.
+3. **Conversation context** — use the current conversation as the plan (user discussed changes directly)
 
 If no plan is found by any method, ask the user.
 
