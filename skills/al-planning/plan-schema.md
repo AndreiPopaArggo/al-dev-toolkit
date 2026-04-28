@@ -59,7 +59,7 @@ open_questions: []                  # free-text strings; empty if none
 
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
-| `plan.id` | string | yes | Correlates to filename stem. Format: `plan-YYYYMMDD-HHMM`. |
+| `plan.id` | string | yes | Correlates to filename stem. Default form: `plan-YYYYMMDD-HHMM`. When the plan is created by `/do-task <taskID>`, the form is `task-<taskID>-plan` and the file is `.github/plans/task-<taskID>-plan.md`. |
 | `plan.created` | ISO 8601 timestamp | yes | UTC |
 | `plan.feature` | string | yes | Short human-readable feature name |
 | `plan.status` | enum | yes | `draft` \| `implementing` \| `complete` |
