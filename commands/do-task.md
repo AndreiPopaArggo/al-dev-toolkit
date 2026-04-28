@@ -165,6 +165,94 @@ When the user replies on the next turn (typically with files attached and a brie
 
 **If the user replies without attaching files** (says "skip" or "no files" or similar): proceed to Phase 4 anyway. al-planning may flag the missing context as a clarifying question if it determines the description is not enough. Do NOT enforce attachment yourself.
 
+## Phase 4 — Plan
+
+Assemble the payload below and invoke the al-planning skill inline (same context, NOT a subagent).
+
+### Payload template
+
+The payload is a markdown blob you build by substituting fields from Phases 1 (Q1–Q4) and the parsed arguments. Build it exactly in the structure below — al-planning's orchestrator instructions reference these section headings.
+
+```
+[DISPATCH_CONTEXT: do-task taskID=<taskID>]
+
+# Task <taskID>: <task_name>
+
+**Project:** <project_name> (<project_short_name>)
+**Status:** <task_status> · <task_percent_complete>% complete · due <task_DeveloperDueDate>
+**dotProject URL:** http://sql/arggoplanner/index.php?m=tasks&a=view&task_id=<taskID>
+
+## User instructions for this run
+
+<free-form text from $ARGUMENTS, or the literal string "(none — default behavior: scope to latest unsatisfied request)" when empty>
+
+## Original description
+
+<task_description verbatim>
+
+## Timeline (chronological)
+
+### <task_log_date> · log #<task_log_id> · type <task_log_type> · creator <task_log_creator>
+
+<task_log_description>
+
+### <task_log_date> · log #<task_log_id> · type <task_log_type> · creator <task_log_creator>
+
+<task_log_description>
+
+(repeat for every log row from Q2 in chronological order)
+
+## Attachments
+
+<one of:>
+- "(no attachments on this task)" — when Q3 returned zero rows
+- "(user has dropped the following in chat: <comma-separated filenames the model can see in conversation context>)" — when Phase 3 ran and the user attached files
+
+## Referenced tasks (one-hop context, NOT work to plan)
+
+<one of:>
+- "(no cross-task references found)" — when Q4 was skipped
+- one block per Q4 row:
+
+### Task <ref task_id>: <ref task_name> — <ref task_percent_complete>% complete
+
+<ref task_description>
+
+**Recent log dump:**
+<last 5 entries from log_dump, oldest first; trim each to 500 chars max with ellipsis if longer>
+
+## Orchestrator instructions
+
+This is an iterative ticket from arggoplanner. Read the timeline holistically before planning.
+
+**Scope rule (default):** Plan ONLY the latest unsatisfied request. Earlier completed work is context — note existing object IDs, prior decisions, established conventions; do NOT re-plan it.
+
+**User instructions in the section above override the scope rule** when present.
+
+**Completion markers used by this team** (strong signals, not contracts): `@se poate testa`, `rezolvat`, `modificat pe productie`, `@instalat`, `pus pe productie`. A dev reply containing these usually means delivered. `@feedback` and `@in lucru` are work-in-progress / new-request signals.
+
+**Cross-task references** in the timeline have already been pre-fetched into the section above. They are context only — do NOT generate plans for them. If you spot a task reference the regex missed, you may issue an additional `mysql_query` to fetch it.
+
+If anything is ambiguous after reading the timeline + user instructions + referenced tasks, ASK CLARIFYING QUESTIONS before designing (al-planning Step 4 — one question at a time).
+
+When done planning, write the plan file to `.github/plans/task-<taskID>-plan.md` (with `plan.id: task-<taskID>-plan`), update LATEST, and return control. Do NOT present the 3-option handoff prompt — /do-task always continues.
+```
+
+### Invoke al-planning
+
+Pass the assembled payload as `$ARGUMENTS` to the al-planning skill. Run the skill in the current context (not a subagent). al-planning will:
+
+1. Detect the `[DISPATCH_CONTEXT: do-task taskID=<taskID>]` marker.
+2. Run its specificity gate (Step 0). If the request is too vague even after the timeline analysis, al-planning stops with its specificity message — relay that to the user verbatim and stop /do-task.
+3. Read project config, glob src/**/*.al, run researcher subagents, design.
+4. Write the plan file to `.github/plans/task-<taskID>-plan.md` with `plan.id: task-<taskID>-plan` (forced by the marker).
+5. Update LATEST.
+6. Recognize the marker → skip the 3-option Handoff prompt → return control to /do-task.
+
+If al-planning asks a clarifying question, pause /do-task — the user answers — al-planning resumes — /do-task continues to Phase 5 once the plan file is written.
+
+After al-planning returns, verify the plan file exists at `.github/plans/task-<taskID>-plan.md`. If the file is missing, stop with: `al-planning did not produce a plan file. Check the al-planning output and re-run /do-task <taskID> when the issue is resolved.`
+
 ## User's Request
 
 $ARGUMENTS
