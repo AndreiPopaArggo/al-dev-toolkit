@@ -253,6 +253,55 @@ If al-planning asks a clarifying question, pause /do-task — the user answers �
 
 After al-planning returns, verify the plan file exists at `.github/plans/task-<taskID>-plan.md`. If the file is missing, stop with: `al-planning did not produce a plan file. Check the al-planning output and re-run /do-task <taskID> when the issue is resolved.`
 
+## Phase 5 — Implement
+
+Invoke the al-implementation skill inline (same context, NOT a subagent). al-implementation runs as today — no /do-task-specific overrides at this phase. The plan file path is already in conversation context, so al-implementation's "Plan path in prompt" detection (Step 1, priority 1) picks it up.
+
+al-implementation will:
+
+1. Detect the plan via the path in conversation context.
+2. Mutate `plan.status: draft → implementing` in the plan file.
+3. Run pre-implementation setup (read app.json / CodeCop.json / .github/copilot-instructions.md).
+4. Dispatch coder subagents per its dispatch sizing rules (legacy prose vs new-format frontmatter — al-planning produces new-format, so the DAG-based dispatch applies).
+5. Run #ms-dynamics-smb.al/al_build + #ms-dynamics-smb.al/al_get_diagnostics. Run build-error-resolver subagent if needed (max 3 cycles).
+6. Run spec-reviewer subagent (mandatory gate). If GAPS, dispatch a coder to fix and re-build. Max 3 spec-fix cycles.
+7. Run code-reviewer + performance-reviewer subagents in parallel.
+8. If reviewers find issues, dispatch a coder to fix, rebuild, re-run reviewers ONCE.
+9. If all gates pass, mutate `plan.status: implementing → complete`.
+
+Capture al-implementation's final output: build status, reviewer verdicts, files modified, any escalations. /do-task uses these for Phase 6.
+
+If al-implementation halts mid-flow (build cycles exhausted, reviewer verdict BLOCK that wasn't fixable, spec-reviewer GAPS that survived 3 rounds): proceed to Phase 6 anyway. Phase 6's Outstanding section captures what's incomplete.
+
+## Phase 6 — Report
+
+Print the final summary to the user. Build the message from values captured in Phases 1, 4, and 5.
+
+```
+## /do-task <taskID> — Done
+
+**Task:** <task_name> (<project_short_name>)
+**Plan:** .github/plans/task-<taskID>-plan.md (status: <plan.status from the plan file after Phase 5>)
+**Build:** <"green (0 errors)" if al-implementation reported a clean build; otherwise "<N> errors remaining">
+**Spec review:** <PASS / GAPS — N items>
+**Code review:** <APPROVE / FIX FIRST / BLOCK>
+**Performance review:** <APPROVE / FIX FIRST / BLOCK>
+
+**Files created/modified:**
+- <relative path> (<object type>, <object id if applicable>)
+- ...
+
+**Outstanding:**
+- <bullet for each unresolved review finding, build error, or escalation>
+- (or the literal "(none)" if everything is clean)
+
+**dotProject:** http://sql/arggoplanner/index.php?m=tasks&a=view&task_id=<taskID>
+
+Note: arggoplanner is read-only via the MCP. Update task status / add a delivery log manually.
+```
+
+After printing this, /do-task is done. Do NOT continue or ask the user what's next — the user will type their next request when ready.
+
 ## User's Request
 
 $ARGUMENTS
