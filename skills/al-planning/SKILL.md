@@ -83,7 +83,11 @@ Design the solution directly from research findings. Do NOT delegate design to s
 
 ## Write the Plan
 
-**Location:** `.github/plans/plan-<YYYYMMDD-HHMM>.md`
+**Dispatch context detection:** Before writing the plan, check `$ARGUMENTS` for a marker of the form `[DISPATCH_CONTEXT: do-task taskID=<N>]`. If present, extract `<N>` and use it for the filename and `plan.id` per the table below.
+
+**Location:**
+- Default: `.github/plans/plan-<YYYYMMDD-HHMM>.md` with `plan.id: plan-YYYYMMDD-HHMM`
+- When `[DISPATCH_CONTEXT: do-task taskID=<N>]` is present: `.github/plans/task-<N>-plan.md` with `plan.id: task-<N>-plan`
 
 The plan must be **self-contained** — a coder with only the plan file must be able to implement.
 
@@ -187,7 +191,9 @@ Do not apply merges silently — the user decides each one. If the user rejects 
 
 **Write LATEST pointer:** Save the plan file path to `.github/plans/LATEST` (overwrite if exists). This allows `/implement` to find the most recent plan without manual path entry. Create the `.github/plans/` directory if it doesn't exist.
 
-Present the plan summary (design decisions, file list, open questions), then ask the user:
+**If `[DISPATCH_CONTEXT: do-task taskID=<N>]` was present in `$ARGUMENTS`:** the caller (`/do-task`) will continue to al-implementation itself. Present a brief plan summary (design decisions, file list, open questions) and STOP — do not present the 3-option prompt. Return control to the caller.
+
+**Otherwise** present the plan summary (design decisions, file list, open questions), then ask the user:
 
 > Plan saved to `[plan-file-path]`. Three options:
 >
