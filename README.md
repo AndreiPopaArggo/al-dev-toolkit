@@ -38,6 +38,7 @@ Add to your VS Code `settings.json`:
 
 | Command | Description |
 |---------|-------------|
+| `/do-task` | Drive an arggoplanner (dotProject) task end-to-end: fetch task + timeline + attachments via mysql-planner MCP, scope to latest unsatisfied request, run /al-planning → /al-implementation autonomously |
 | `/al-planning` | Plan a BC feature before implementing |
 | `/al-implementation` | Implement from a previously created plan |
 | `/quick` | Quick implementation for simple 1-2 file changes |
