@@ -61,6 +61,7 @@ This project uses **al-dev-toolkit**. Route BC work through its commands — the
 
 | User intent | Command |
 |---|---|
+| Implement an arggoplanner task end-to-end | `/do-task <taskID>` |
 | Vague idea, not sure what to build | `/brainstorming` |
 | Multi-object feature, new tables/pages/codeunits, event subscriptions | `/al-planning` → `/al-implementation` |
 | 1-2 file change (field, property, caption) | `/quick` |
@@ -103,6 +104,7 @@ This project uses the al-dev-toolkit plugin. AL edits must go through its comman
 
 | Request | Command |
 |---|---|
+| Implement an arggoplanner task end-to-end | `/do-task <taskID>` |
 | Vague idea, not sure what to build | `/brainstorming` → `/al-planning` |
 | New objects, multi-object change, new feature, event subscriptions | `/al-planning` → `/al-implementation` |
 | 1-2 file change (field, property, caption, page tweak) | `/quick` |
