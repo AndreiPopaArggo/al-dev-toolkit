@@ -142,6 +142,29 @@ dotProject: http://sql/arggoplanner/index.php?m=tasks&a=view&task_id=<taskID>
 
 If neither gate trips, proceed to Phase 3.
 
+## Phase 3 — Attachment gate
+
+If Q3 returned zero rows, skip this phase and proceed to Phase 4.
+
+If Q3 returned rows, the user must attach the files in chat before planning can proceed. Print:
+
+```
+Task <taskID> has <N> attachment(s) in arggoplanner:
+  - <file_name> (<file_type>, <human-readable size>)
+  - <file_name> (<file_type>, <human-readable size>)
+  ...
+
+Please drop them into this chat (drag/drop or paste), then say "go" or just continue. I'll resume from there.
+
+dotProject: http://sql/arggoplanner/index.php?m=tasks&a=view&task_id=<taskID>
+```
+
+Then **stop the current turn**. Do NOT proceed to Phase 4 — the user has not attached the files yet.
+
+When the user replies on the next turn (typically with files attached and a brief message like "go" or even no message), the model resumes /do-task. Files are now in conversation context — Phase 4's payload assembly will reference them as "(user has dropped the following in chat: ...)". You do NOT need to re-fetch from arggoplanner; the data from Phases 1–3 is still in your context.
+
+**If the user replies without attaching files** (says "skip" or "no files" or similar): proceed to Phase 4 anyway. al-planning may flag the missing context as a clarifying question if it determines the description is not enough. Do NOT enforce attachment yourself.
+
 ## User's Request
 
 $ARGUMENTS
