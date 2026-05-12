@@ -80,12 +80,13 @@ Skills are loaded automatically by agents or invoked by commands.
 
 ### MCP Servers
 
-The plugin connects to two remote MCP servers (configured in `.mcp.json`):
+The plugin connects to three remote MCP servers (configured in `.mcp.json`):
 
 | Server | Purpose |
 |--------|---------|
 | **al-mcp-server** | BC base application symbol lookup (objects, events, source code) |
 | **microsoft-learn** | Official Microsoft Learn documentation search |
+| **mysql-planner** | Read-only access to the arggoplanner (dotProject) database — used by `/do-task` |
 
 ### Hooks
 

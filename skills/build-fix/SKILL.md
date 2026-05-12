@@ -10,29 +10,35 @@ Incrementally fix BC AL compiler errors.
 
 ## Workflow
 
-1. **Run AL compiler** with #ms-dynamics-smb.al/al_build({scope:"current"}). Then call #ms-dynamics-smb.al/al_get_diagnostics({scope:"current", severities:["error","warning"], limit:100}) to retrieve the typed diagnostic list.
+1. **Activate deferred AL build tools first.** Before any AL build or diagnostics call, use `tool_search` for the AL project build tools. Treat a result containing `al_build` and `al_getdiagnostics` as successful activation.
+   - Keep provider-qualified IDs such as `ms-dynamics-smb.al/al_build` and `ms-dynamics-smb.al/al_get_diagnostics` in custom agent/tool allow-lists; those are configuration-side IDs.
+   - After deferred activation, call the runtime names returned by `tool_search`: `al_build` and `al_getdiagnostics`.
+   - Do not conclude the tool is unavailable just because it is absent from the initial visible tool list, absent from `tools_*.json`, or named differently from the provider-qualified allow-list ID.
+   - If `tool_search` returns `al_getdiagnostics` but the runtime call still cannot be made, report a deferred-tool expansion failure, then fall back to the direct `alc.exe`/AL Package build route.
 
-2. **Read diagnostics:** the response is already grouped by file with structured fields — no terminal parsing required.
+2. **Run AL compiler** with `al_build({scope:"current"})`. Then call `al_getdiagnostics({scope:"workspace", severities:["error","warning"], areas:["AL"], limit:100})` to retrieve the typed diagnostic list.
+
+3. **Read diagnostics:** the response is already grouped by file with structured fields — no terminal parsing required.
    - Each item: `file`, `line`, `column`, `severity`, `code` (e.g. `AL0118`, `AA0021`, `AS0011`), `message`
    - Sort locally by severity (Error before Warning) and priority order below
 
-3. **Loop: fix and rebuild until clean.** For each error in priority order:
+4. **Loop: fix and rebuild until clean.** For each error in priority order:
    - Read the file and show error with surrounding context
    - Explain the issue
    - Apply the fix (smallest possible change)
-   - Re-run #ms-dynamics-smb.al/al_build({scope:"current"}) then #ms-dynamics-smb.al/al_get_diagnostics({severities:["error"]})
+   - Re-run `al_build({scope:"current"})` then `al_getdiagnostics({scope:"workspace", severities:["error"], areas:["AL"]})`
    - Verify error resolved (item with same `code` at same `file`/`line` no longer present)
 
    Continue the loop (re-parse new build output if errors remain) until one of these terminal conditions:
-   - Build reports 0 errors — SUCCESS, go to step 5
-   - Same error fails to resolve after 3 attempts — ESCALATE (step 4)
-   - Fix introduces new errors that cannot be resolved — rollback and ESCALATE (step 4)
+   - Build reports 0 errors — SUCCESS, go to step 6
+   - Same error fails to resolve after 3 attempts — ESCALATE (step 5)
+   - Fix introduces new errors that cannot be resolved — rollback and ESCALATE (step 5)
    - User requests pause — stop and report current state
 
-4. **Escalate (do not silently exit with errors):**
+5. **Escalate (do not silently exit with errors):**
    If the loop cannot reach 0 errors, STOP and explicitly report to the user: which errors remain, what was tried, and why each attempt failed. Do not claim success. Do not declare the task done. The build must be clean, or the user must be told it is not.
 
-5. **Report final state:**
+6. **Report final state:**
    - Errors fixed (list)
    - Errors remaining (list — MUST be empty for success)
    - Warnings addressed (only if user asked for warning fixes)

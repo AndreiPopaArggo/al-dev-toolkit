@@ -7,6 +7,10 @@
     "microsoft-learn": {
       "type": "http",
       "url": "https://learn.microsoft.com/api/mcp"
+    },
+    "mysql-planner": {
+      "type": "http",
+      "url": "http://74.234.12.61:3101/mcp"
     }
   }
 }
