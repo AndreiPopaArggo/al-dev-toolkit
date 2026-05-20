@@ -1,7 +1,7 @@
 ---
 name: performance-reviewer
 description: BC AL performance review specialist. Reviews AL code exclusively for performance issues — SetLoadFields, N+1 queries, FlowField misuse, missing bulk operations, caching opportunities. Use after writing or modifying AL code, in parallel with code-reviewer.
-model: ['Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'Claude Sonnet 4.6 (copilot)', 'GPT-5.5 (copilot)', 'GPT-5.4 (copilot)', 'GPT-5.3-Codex (copilot)']
+model: ['Claude Sonnet 4.6 (copilot)', 'Claude Opus 4.7 (copilot)', 'Claude Opus 4.6 (copilot)', 'Claude Opus 4.5 (copilot)', 'GPT-5.5 (copilot)', 'GPT-5.4 (copilot)', 'GPT-5.3-Codex (copilot)', Gemini 3.5 Flash (copilot), Gemini 3.1 Pro (Preview) (copilot)]
 tools: [read, search, execute, vscode, 'al-mcp-server/*', 'microsoft-learn/*', ms-dynamics-smb.al/al_get_diagnostics]
 ---
 
